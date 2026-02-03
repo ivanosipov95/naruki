@@ -13,6 +13,16 @@ const chartGridEl = document.querySelector("#chart-grid");
 const shareButton = document.querySelector("#share-link");
 const shareStatusEl = document.querySelector("#share-status");
 
+function clearLoadingState() {
+  document.body.classList.remove("is-loading");
+}
+
+if (document.readyState === "complete") {
+  clearLoadingState();
+} else {
+  window.addEventListener("load", clearLoadingState, { once: true });
+}
+
 const formatter = new Intl.NumberFormat("ru-RU", {
   style: "currency",
   currency: "RUB",
