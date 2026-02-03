@@ -105,6 +105,88 @@ body {
   gap: 18px;
 }
 
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.share-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.share-tooltip {
+  position: absolute;
+  left: 50%;
+  top: -36px;
+  transform: translate(-50%, 6px);
+  background: #121722;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.share-tooltip::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: #121722 transparent transparent transparent;
+}
+
+.share-tooltip[data-active="true"] {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.ghost {
+  border: 1px solid rgba(15, 19, 30, 0.15);
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--ink);
+  font-weight: 600;
+  padding: 10px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.ghost:hover {
+  transform: translateY(-1px);
+  border-color: rgba(47, 136, 255, 0.35);
+  box-shadow: 0 12px 20px rgba(47, 136, 255, 0.15);
+}
+
+.ghost--icon {
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ghost--icon svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .field {
   display: grid;
   gap: 10px;

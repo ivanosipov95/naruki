@@ -10,6 +10,8 @@ const effectiveRateEl = document.querySelector("#effective-rate");
 const avgNetEl = document.querySelector("#avg-net");
 const bracketsEl = document.querySelector("#brackets");
 const chartGridEl = document.querySelector("#chart-grid");
+const shareButton = document.querySelector("#share-link");
+const shareStatusEl = document.querySelector("#share-status");
 
 const formatter = new Intl.NumberFormat("ru-RU", {
   style: "currency",
@@ -198,26 +200,110 @@ function declineMonth(count) {
   return "месяцев";
 }
 
-function handleSubmit(event) {
-  event.preventDefault();
+function getCurrentInputs() {
   const gross = clampNumber(Number(grossInput.value));
   const startMonth = Number(startInput.value);
-  const monthsCount = Math.max(0, 12 - startMonth + 1);
+  return { gross, startMonth };
+}
 
+function calculateAll(gross, startMonth) {
+  const monthsCount = Math.max(0, 12 - startMonth + 1);
   const totalGross = gross * monthsCount;
   const { totalTax, breakdown } = calculateTaxForIncome(totalGross);
   const totalNet = totalGross - totalTax;
-
   const months = calculateMonthlyNet(gross, startMonth);
+  return { totalGross, totalTax, totalNet, monthsCount, breakdown, months };
+}
 
-  renderSummary({ totalGross, totalTax, totalNet, monthsCount });
-  renderBrackets(breakdown, totalGross);
-  renderChart(months);
+function handleSubmit(event) {
+  event.preventDefault();
+  const { gross, startMonth } = getCurrentInputs();
+  const results = calculateAll(gross, startMonth);
+
+  renderSummary(results);
+  renderBrackets(results.breakdown, results.totalGross);
+  renderChart(results.months);
+
+  syncUrlParams({ gross, startMonth });
 }
 
 form.addEventListener("submit", handleSubmit);
 
+function setShareStatus(message) {
+  if (!shareStatusEl) return;
+  shareStatusEl.textContent = message;
+  if (!message) {
+    shareStatusEl.removeAttribute("data-active");
+    return;
+  }
+  shareStatusEl.setAttribute("data-active", "true");
+  window.clearTimeout(setShareStatus.timeoutId);
+  setShareStatus.timeoutId = window.setTimeout(() => {
+    shareStatusEl.textContent = "";
+    shareStatusEl.removeAttribute("data-active");
+  }, 2400);
+}
+
+async function copyShareLink() {
+  handleSubmit(new Event("submit"));
+  const url = window.location.href;
+  try {
+    await navigator.clipboard.writeText(url);
+    setShareStatus("Ссылка скопирована.");
+  } catch (error) {
+    const fallback = document.createElement("input");
+    fallback.value = url;
+    document.body.appendChild(fallback);
+    fallback.select();
+    const copied = document.execCommand("copy");
+    document.body.removeChild(fallback);
+    setShareStatus(copied ? "Ссылка скопирована." : "Не удалось скопировать ссылку.");
+  }
+}
+
+if (shareButton) {
+  shareButton.addEventListener("click", copyShareLink);
+}
+
+function readUrlParams() {
+  const params = new URLSearchParams(window.location.search);
+  const gross = Number(params.get("gross"));
+  const startMonth = Number(params.get("start"));
+
+  const hasGross = Number.isFinite(gross) && gross > 0;
+  const hasStart = Number.isFinite(startMonth) && startMonth >= 1 && startMonth <= 12;
+
+  return {
+    gross: hasGross ? gross : null,
+    startMonth: hasStart ? startMonth : null,
+  };
+}
+
+function syncUrlParams({ gross, startMonth }) {
+  const params = new URLSearchParams(window.location.search);
+  if (gross > 0) {
+    params.set("gross", String(Math.round(gross)));
+  } else {
+    params.delete("gross");
+  }
+  if (startMonth >= 1 && startMonth <= 12) {
+    params.set("start", String(startMonth));
+  } else {
+    params.delete("start");
+  }
+
+  const query = params.toString();
+  const nextUrl = `${window.location.pathname}${query ? `?${query}` : ""}`;
+  window.history.replaceState(null, "", nextUrl);
+}
+
 const now = new Date();
-startInput.value = String(now.getMonth() + 1);
+const { gross: presetGross, startMonth: presetStart } = readUrlParams();
+
+if (presetGross !== null) {
+  grossInput.value = String(presetGross);
+}
+
+startInput.value = String(presetStart ?? now.getMonth() + 1);
 
 handleSubmit(new Event("submit"));

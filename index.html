@@ -47,7 +47,31 @@
                 <option value="12">Декабрь</option>
               </select>
             </div>
-            <button class="primary" type="submit">Рассчитать</button>
+            <div class="actions">
+              <button class="primary" type="submit">Рассчитать</button>
+              <div class="share-wrap">
+                <button
+                  class="ghost ghost--icon"
+                  type="button"
+                  id="share-link"
+                  aria-label="Поделиться ссылкой"
+                  title="Поделиться ссылкой"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="18" cy="5" r="3" />
+                    <circle cx="6" cy="12" r="3" />
+                    <circle cx="18" cy="19" r="3" />
+                    <path d="M8.7 11l6.6-4.1M8.7 13l6.6 4.1" />
+                  </svg>
+                </button>
+                <span
+                  class="share-tooltip"
+                  id="share-status"
+                  role="status"
+                  aria-live="polite"
+                ></span>
+              </div>
+            </div>
             <p class="hint">Ставки применяются к годовому доходу по прогрессивной шкале.</p>
           </form>
         </div>
