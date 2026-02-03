@@ -1,0 +1,223 @@
+const form = document.querySelector("#calc-form");
+const grossInput = document.querySelector("#gross");
+const startInput = document.querySelector("#start");
+
+const totalGrossEl = document.querySelector("#total-gross");
+const totalTaxEl = document.querySelector("#total-tax");
+const totalNetEl = document.querySelector("#total-net");
+const monthsCountEl = document.querySelector("#months-count");
+const effectiveRateEl = document.querySelector("#effective-rate");
+const avgNetEl = document.querySelector("#avg-net");
+const bracketsEl = document.querySelector("#brackets");
+const chartGridEl = document.querySelector("#chart-grid");
+
+const formatter = new Intl.NumberFormat("ru-RU", {
+  style: "currency",
+  currency: "RUB",
+  maximumFractionDigits: 0,
+});
+
+const percentFormatter = new Intl.NumberFormat("ru-RU", {
+  style: "percent",
+  minimumFractionDigits: 1,
+  maximumFractionDigits: 1,
+});
+
+const monthNames = [
+  "Янв",
+  "Фев",
+  "Мар",
+  "Апр",
+  "Май",
+  "Июн",
+  "Июл",
+  "Авг",
+  "Сен",
+  "Окт",
+  "Ноя",
+  "Дек",
+];
+
+const brackets = [
+  {
+    label: "До 2 400 000",
+    limit: 2_400_000,
+    rate: 0.13,
+  },
+  {
+    label: "2 400 000 – 5 000 000",
+    limit: 5_000_000,
+    rate: 0.15,
+  },
+  {
+    label: "5 000 000 – 20 000 000",
+    limit: 20_000_000,
+    rate: 0.18,
+  },
+  {
+    label: "20 000 000 – 50 000 000",
+    limit: 50_000_000,
+    rate: 0.2,
+  },
+  {
+    label: "Свыше 50 000 000",
+    limit: Infinity,
+    rate: 0.22,
+  },
+];
+
+function clampNumber(value) {
+  if (!Number.isFinite(value) || value < 0) return 0;
+  return value;
+}
+
+function calculateTaxForIncome(income) {
+  let remaining = income;
+  let previousLimit = 0;
+  let totalTax = 0;
+  const breakdown = brackets.map((bracket) => {
+    const taxable = Math.max(
+      0,
+      Math.min(remaining, bracket.limit - previousLimit)
+    );
+    const tax = taxable * bracket.rate;
+    remaining -= taxable;
+    previousLimit = bracket.limit;
+    totalTax += tax;
+    return {
+      label: bracket.label,
+      rate: bracket.rate,
+      taxable,
+      tax,
+    };
+  });
+
+  return { totalTax, breakdown };
+}
+
+function calculateMonthlyNet(gross, startMonth) {
+  const months = [];
+  let cumulativeIncome = 0;
+  let cumulativeTax = 0;
+
+  for (let month = 1; month <= 12; month += 1) {
+    const working = month >= startMonth;
+    if (!working) {
+      months.push({
+        month,
+        gross: 0,
+        tax: 0,
+        net: 0,
+        working,
+      });
+      continue;
+    }
+
+    cumulativeIncome += gross;
+    const { totalTax } = calculateTaxForIncome(cumulativeIncome);
+    const monthTax = totalTax - cumulativeTax;
+    cumulativeTax = totalTax;
+    months.push({
+      month,
+      gross,
+      tax: monthTax,
+      net: gross - monthTax,
+      working,
+    });
+  }
+
+  return months;
+}
+
+function renderSummary({ totalGross, totalTax, totalNet, monthsCount }) {
+  totalGrossEl.textContent = formatter.format(totalGross);
+  totalTaxEl.textContent = formatter.format(totalTax);
+  totalNetEl.textContent = formatter.format(totalNet);
+
+  monthsCountEl.textContent = `${monthsCount} ${declineMonth(monthsCount)} работы`;
+  const effectiveRate = totalGross === 0 ? 0 : totalTax / totalGross;
+  effectiveRateEl.textContent = `Эффективная ставка: ${percentFormatter.format(
+    effectiveRate
+  )}`;
+
+  const avgNet = monthsCount === 0 ? 0 : totalNet / monthsCount;
+  avgNetEl.textContent = `Средняя на руки: ${formatter.format(avgNet)}`;
+}
+
+function renderBrackets(breakdown, totalGross) {
+  bracketsEl.innerHTML = "";
+  breakdown.forEach((item) => {
+    const share = totalGross === 0 ? 0 : item.taxable / totalGross;
+    const card = document.createElement("div");
+    card.className = "bracket";
+    card.innerHTML = `
+      <div class="bracket__row">
+        <span class="bracket__name">${item.label}</span>
+        <span class="bracket__tax">${Math.round(item.rate * 100)}%</span>
+      </div>
+      <div class="bracket__row">
+        <span>${formatter.format(item.taxable)}</span>
+        <span>${formatter.format(item.tax)}</span>
+      </div>
+      <div class="bracket__bar" aria-hidden="true">
+        <div class="bracket__fill" style="width: ${share * 100}%"></div>
+      </div>
+    `;
+    bracketsEl.appendChild(card);
+  });
+}
+
+function renderChart(months) {
+  chartGridEl.innerHTML = "";
+  const maxNet = months.reduce((max, month) => Math.max(max, month.net), 0);
+
+  months.forEach((item) => {
+    const row = document.createElement("div");
+    row.className = "month-row";
+    const width = maxNet === 0 ? 0 : (item.net / maxNet) * 100;
+    const label = monthNames[item.month - 1];
+    const value = item.working ? formatter.format(item.net) : "—";
+    row.innerHTML = `
+      <div class="month-row__label">
+        <span>${label}</span>
+        <span>${value}</span>
+      </div>
+      <div class="month-row__bar">
+        <div class="month-row__fill" style="width: ${width}%"></div>
+      </div>
+    `;
+    chartGridEl.appendChild(row);
+  });
+}
+
+function declineMonth(count) {
+  if (count % 10 === 1 && count % 100 !== 11) return "месяц";
+  if ([2, 3, 4].includes(count % 10) && ![12, 13, 14].includes(count % 100)) {
+    return "месяца";
+  }
+  return "месяцев";
+}
+
+function handleSubmit(event) {
+  event.preventDefault();
+  const gross = clampNumber(Number(grossInput.value));
+  const startMonth = Number(startInput.value);
+  const monthsCount = Math.max(0, 12 - startMonth + 1);
+
+  const totalGross = gross * monthsCount;
+  const { totalTax, breakdown } = calculateTaxForIncome(totalGross);
+  const totalNet = totalGross - totalTax;
+
+  const months = calculateMonthlyNet(gross, startMonth);
+
+  renderSummary({ totalGross, totalTax, totalNet, monthsCount });
+  renderBrackets(breakdown, totalGross);
+  renderChart(months);
+}
+
+form.addEventListener("submit", handleSubmit);
+
+const now = new Date();
+startInput.value = String(now.getMonth() + 1);
+
+handleSubmit(new Event("submit"));

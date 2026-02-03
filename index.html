@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Калькулятор зарплаты на руки</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <section class="hero">
+        <div class="hero__text">
+          <p class="eyebrow">Налоги 2026 · Годовой доход</p>
+          <h1>Зарплата на руки за год — прозрачно и красиво</h1>
+          <p class="lead">
+            Введите ежемесячную зарплату до налогов и месяц начала работы — мы
+            покажем итоговые суммы, распределение по ставкам и помесячный доход.
+          </p>
+        </div>
+        <div class="hero__panel">
+          <form id="calc-form" class="card">
+            <div class="field">
+              <label for="gross">Зарплата в месяц до налогов, ₽</label>
+              <input
+                id="gross"
+                name="gross"
+                type="number"
+                inputmode="decimal"
+                min="0"
+                step="1000"
+                placeholder="Например, 220000"
+                required
+              />
+            </div>
+            <div class="field">
+              <label for="start">Месяц начала работы в этом году</label>
+              <select id="start" name="start" required>
+                <option value="1">Январь</option>
+                <option value="2">Февраль</option>
+                <option value="3">Март</option>
+                <option value="4">Апрель</option>
+                <option value="5">Май</option>
+                <option value="6">Июнь</option>
+                <option value="7">Июль</option>
+                <option value="8">Август</option>
+                <option value="9">Сентябрь</option>
+                <option value="10">Октябрь</option>
+                <option value="11">Ноябрь</option>
+                <option value="12">Декабрь</option>
+              </select>
+            </div>
+            <button class="primary" type="submit">Рассчитать</button>
+            <p class="hint">Ставки применяются к годовому доходу по прогрессивной шкале.</p>
+          </form>
+        </div>
+      </section>
+
+      <section class="summary" aria-live="polite">
+        <div class="card stat">
+          <p class="stat__label">Доход до налогов</p>
+          <p class="stat__value" id="total-gross">—</p>
+          <p class="stat__meta" id="months-count">—</p>
+        </div>
+        <div class="card stat">
+          <p class="stat__label">Налоги всего</p>
+          <p class="stat__value" id="total-tax">—</p>
+          <p class="stat__meta" id="effective-rate">—</p>
+        </div>
+        <div class="card stat highlight">
+          <p class="stat__label">Доход на руки</p>
+          <p class="stat__value" id="total-net">—</p>
+          <p class="stat__meta" id="avg-net">—</p>
+        </div>
+      </section>
+
+      <section class="details">
+        <div class="card breakdown">
+          <div class="breakdown__header">
+            <h2>Налоги по ставкам</h2>
+            <p>Сколько дохода попало в каждую шкалу.</p>
+          </div>
+          <div id="brackets" class="breakdown__list"></div>
+        </div>
+
+        <div class="card chart">
+          <div class="chart__header">
+            <h2>Доход по месяцам</h2>
+            <p>На руки с учетом прогрессии по мере накопления.</p>
+          </div>
+          <div class="chart__grid" id="chart-grid"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>Расчет ориентировочный и не является налоговой консультацией.</p>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>
