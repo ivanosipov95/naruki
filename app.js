@@ -25,6 +25,10 @@ const percentFormatter = new Intl.NumberFormat("ru-RU", {
   maximumFractionDigits: 1,
 });
 
+const inputNumberFormatter = new Intl.NumberFormat("ru-RU", {
+  maximumFractionDigits: 0,
+});
+
 const monthNames = [
   "Янв",
   "Фев",
@@ -71,6 +75,41 @@ const brackets = [
 function clampNumber(value) {
   if (!Number.isFinite(value) || value < 0) return 0;
   return value;
+}
+
+function normalizeGrossInput(value) {
+  return value.replace(/[^\d]/g, "");
+}
+
+function formatGrossInput(value) {
+  const digits = normalizeGrossInput(value);
+  if (!digits) return "";
+  return inputNumberFormatter.format(Number(digits));
+}
+
+function parseGrossInput(value) {
+  const digits = normalizeGrossInput(value);
+  if (!digits) return 0;
+  return Number(digits);
+}
+
+function countDigitsBefore(value, caretIndex) {
+  if (!Number.isFinite(caretIndex) || caretIndex <= 0) return 0;
+  let count = 0;
+  for (let i = 0; i < Math.min(caretIndex, value.length); i += 1) {
+    if (/\d/.test(value[i])) count += 1;
+  }
+  return count;
+}
+
+function caretFromDigits(formattedValue, digitsCount) {
+  if (digitsCount <= 0) return 0;
+  let count = 0;
+  for (let i = 0; i < formattedValue.length; i += 1) {
+    if (/\d/.test(formattedValue[i])) count += 1;
+    if (count >= digitsCount) return i + 1;
+  }
+  return formattedValue.length;
 }
 
 function calculateTaxForIncome(income) {
@@ -201,7 +240,7 @@ function declineMonth(count) {
 }
 
 function getCurrentInputs() {
-  const gross = clampNumber(Number(grossInput.value));
+  const gross = clampNumber(parseGrossInput(grossInput.value));
   const startMonth = Number(startInput.value);
   return { gross, startMonth };
 }
@@ -228,6 +267,16 @@ function handleSubmit(event) {
 }
 
 form.addEventListener("submit", handleSubmit);
+
+grossInput.addEventListener("input", () => {
+  const rawValue = grossInput.value;
+  const caret = grossInput.selectionStart;
+  const digitsBefore = countDigitsBefore(rawValue, caret);
+  const formatted = formatGrossInput(rawValue);
+  grossInput.value = formatted;
+  const nextCaret = caretFromDigits(formatted, digitsBefore);
+  grossInput.setSelectionRange(nextCaret, nextCaret);
+});
 
 function setShareStatus(message) {
   if (!shareStatusEl) return;
@@ -297,13 +346,12 @@ function syncUrlParams({ gross, startMonth }) {
   window.history.replaceState(null, "", nextUrl);
 }
 
-const now = new Date();
 const { gross: presetGross, startMonth: presetStart } = readUrlParams();
 
 if (presetGross !== null) {
-  grossInput.value = String(presetGross);
+  grossInput.value = formatGrossInput(String(presetGross));
 }
 
-startInput.value = String(presetStart ?? now.getMonth() + 1);
+startInput.value = String(presetStart ?? 1);
 
 handleSubmit(new Event("submit"));
