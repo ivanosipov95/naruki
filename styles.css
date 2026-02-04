@@ -452,14 +452,14 @@ select:focus {
   font-size: 0.85rem;
   color: #b5534c;
   opacity: 0;
-  height: 0;
-  overflow: hidden;
+  min-height: 1.2em;
+  visibility: hidden;
   transition: opacity 0.2s ease;
 }
 
 body.is-dirty .calc-hint {
   opacity: 1;
-  height: auto;
+  visibility: visible;
 }
 
 .summary {
