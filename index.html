@@ -4,12 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Калькулятор зарплаты на руки</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap"
-      rel="stylesheet"
+    <meta
+      name="description"
+      content="Калькулятор дохода на руки по прогрессивной шкале НДФЛ: вводите месячную зарплату и месяц начала работы, получайте итог за год."
     />
+    <meta property="og:title" content="Калькулятор зарплаты на руки" />
+    <meta
+      property="og:description"
+      content="Рассчитайте доход на руки за год с учетом прогрессивной шкалы НДФЛ."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta name="theme-color" content="#f6f0e9" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body class="is-loading">
@@ -151,6 +158,7 @@
             Введите ежемесячную зарплату до налогов и месяц начала работы — мы
             покажем итоговые суммы, распределение по ставкам и помесячный доход.
           </p>
+          <p class="meta-note">Актуально на 4 февраля 2026 года.</p>
         </div>
       </section>
 
@@ -194,6 +202,10 @@
 
     <footer class="footer">
       <p>Расчет ориентировочный и не является налоговой консультацией.</p>
+      <div class="footer__links">
+        <a href="policy.html">Политика конфиденциальности</a>
+        <a href="contacts.html">Контакты</a>
+      </div>
     </footer>
 
     <script src="app.js"></script>

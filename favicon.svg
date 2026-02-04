@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Калькулятор">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#2f88ff"/>
+      <stop offset="1" stop-color="#f0b866"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="url(#g)"/>
+  <rect x="14" y="12" width="36" height="40" rx="8" fill="#ffffff" opacity="0.92"/>
+  <rect x="20" y="18" width="24" height="8" rx="4" fill="#2f88ff"/>
+  <circle cx="24" cy="34" r="3" fill="#121722"/>
+  <circle cx="32" cy="34" r="3" fill="#121722"/>
+  <circle cx="40" cy="34" r="3" fill="#121722"/>
+  <circle cx="24" cy="42" r="3" fill="#121722"/>
+  <circle cx="32" cy="42" r="3" fill="#121722"/>
+  <circle cx="40" cy="42" r="3" fill="#121722"/>
+</svg>
