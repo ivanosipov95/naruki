@@ -217,8 +217,14 @@ function renderSummary({ totalGross, totalTax, totalNet, monthsCount }) {
 
 function renderBrackets(breakdown, totalGross) {
   bracketsEl.innerHTML = "";
-  breakdown.forEach((item) => {
-    const share = totalGross === 0 ? 0 : item.taxable / totalGross;
+  const virtualTopForLastBracket = 50_000_000 + 50_000_000;
+  let previousLimit = 0;
+  breakdown.forEach((item, index) => {
+    const bracket = brackets[index];
+    const isLast = index === brackets.length - 1;
+    const limit = isLast ? virtualTopForLastBracket : bracket.limit;
+    const capacity = Math.max(0, limit - previousLimit);
+    const share = capacity === 0 ? 0 : item.taxable / capacity;
     const card = document.createElement("div");
     card.className = "bracket";
     card.innerHTML = `
@@ -231,10 +237,11 @@ function renderBrackets(breakdown, totalGross) {
         <span>${formatter.format(item.tax)}</span>
       </div>
       <div class="bracket__bar" aria-hidden="true">
-        <div class="bracket__fill" style="width: ${share * 100}%"></div>
+        <div class="bracket__fill" style="width: ${Math.min(share, 1) * 100}%"></div>
       </div>
     `;
     bracketsEl.appendChild(card);
+    previousLimit = bracket.limit;
   });
 }
 
