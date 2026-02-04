@@ -447,6 +447,21 @@ select:focus {
   color: var(--muted);
 }
 
+.calc-hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #b5534c;
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+  transition: opacity 0.2s ease;
+}
+
+body.is-dirty .calc-hint {
+  opacity: 1;
+  height: auto;
+}
+
 .summary {
   display: grid;
   grid-template-columns: repeat(3, minmax(220px, 1fr));
