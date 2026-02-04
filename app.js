@@ -12,6 +12,11 @@ const bracketsEl = document.querySelector("#brackets");
 const chartGridEl = document.querySelector("#chart-grid");
 const shareButton = document.querySelector("#share-link");
 const shareStatusEl = document.querySelector("#share-status");
+const submitButton = form.querySelector('button[type="submit"]');
+const buttonLabels = {
+  idle: submitButton?.textContent?.trim() || "Рассчитать",
+  calculating: "Считаем...",
+};
 
 function clearLoadingState() {
   document.body.classList.remove("is-loading");
@@ -101,6 +106,21 @@ function parseGrossInput(value) {
   const digits = normalizeGrossInput(value);
   if (!digits) return 0;
   return Number(digits);
+}
+
+let isCalculating = false;
+
+function setDirtyState(isDirty) {
+  document.body.classList.toggle("is-dirty", isDirty);
+}
+
+function setCalculatingState(active) {
+  isCalculating = active;
+  document.body.classList.toggle("is-calculating", active);
+  if (!submitButton) return;
+  submitButton.classList.toggle("is-calculating", active);
+  submitButton.disabled = active;
+  submitButton.textContent = active ? buttonLabels.calculating : buttonLabels.idle;
 }
 
 function countDigitsBefore(value, caretIndex) {
@@ -266,6 +286,8 @@ function calculateAll(gross, startMonth) {
 
 function handleSubmit(event) {
   event.preventDefault();
+  if (isCalculating) return;
+  setCalculatingState(true);
   const { gross, startMonth } = getCurrentInputs();
   const results = calculateAll(gross, startMonth);
 
@@ -274,6 +296,10 @@ function handleSubmit(event) {
   renderChart(results.months);
 
   syncUrlParams({ gross, startMonth });
+  setDirtyState(false);
+  window.setTimeout(() => {
+    setCalculatingState(false);
+  }, 420);
 }
 
 form.addEventListener("submit", handleSubmit);
@@ -286,6 +312,11 @@ grossInput.addEventListener("input", () => {
   grossInput.value = formatted;
   const nextCaret = caretFromDigits(formatted, digitsBefore);
   grossInput.setSelectionRange(nextCaret, nextCaret);
+  setDirtyState(true);
+});
+
+startInput.addEventListener("change", () => {
+  setDirtyState(true);
 });
 
 function setShareStatus(message) {
@@ -363,5 +394,6 @@ if (presetGross !== null) {
 }
 
 startInput.value = String(presetStart ?? 1);
+setDirtyState(false);
 
 handleSubmit(new Event("submit"));

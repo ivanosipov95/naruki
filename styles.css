@@ -415,6 +415,27 @@ select:focus {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.primary.is-calculating {
+  position: relative;
+  overflow: hidden;
+  pointer-events: none;
+  box-shadow: none;
+}
+
+.primary.is-calculating::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.35) 45%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: translateX(-120%);
+  animation: button-sheen 0.8s ease-in-out infinite;
+}
+
 .primary:hover {
   transform: translateY(-1px);
   box-shadow: 0 16px 24px rgba(47, 136, 255, 0.25);
@@ -465,6 +486,40 @@ select:focus {
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: var(--grid-gap);
 }
+
+body.is-dirty .summary,
+body.is-dirty .details {
+  opacity: 0.45;
+  filter: saturate(0.9);
+}
+
+.calc-progress {
+  position: relative;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(47, 136, 255, 0.12);
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.calc-progress::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 0%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), #6bb8ff);
+}
+
+body.is-calculating .calc-progress {
+  opacity: 1;
+}
+
+body.is-calculating .calc-progress::after {
+  animation: calc-progress 0.6s ease-out forwards;
+}
+
 
 .breakdown__header h2,
 .chart__header h2 {
@@ -607,5 +662,23 @@ select:focus {
   .skeleton__card,
   .skeleton__stat {
     padding: 20px;
+  }
+}
+
+@keyframes button-sheen {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(120%);
+  }
+}
+
+@keyframes calc-progress {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
   }
 }
