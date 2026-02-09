@@ -16,6 +16,7 @@ const summaryNetDeltaEl = document.querySelector("#summary-net-delta");
 const summaryNetMonthEl = document.querySelector("#summary-net-month");
 const compareTableEl = document.querySelector("#compare-table");
 const chartGridEl = document.querySelector("#chart-grid");
+const summarySection = document.querySelector(".summary");
 const shareButton = document.querySelector("#share-link");
 const shareStatusEl = document.querySelector("#share-status");
 const submitButton = form.querySelector('button[type="submit"]');
@@ -107,6 +108,17 @@ function setCalculatingState(active) {
   submitButton.classList.toggle("is-calculating", active);
   submitButton.disabled = active;
   submitButton.textContent = active ? buttonLabels.calculating : buttonLabels.idle;
+}
+
+function scrollToResults() {
+  if (!summarySection) return;
+  const prefersReduced = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
+  summarySection.scrollIntoView({
+    behavior: prefersReduced ? "auto" : "smooth",
+    block: "start",
+  });
 }
 
 function clampNumber(value) {
@@ -434,6 +446,7 @@ function syncUrlParams(inputs) {
 function handleSubmit(event) {
   event.preventDefault();
   if (isCalculating) return;
+  const shouldScroll = event?.isTrusted;
   setCalculatingState(true);
 
   const inputs = getCurrentInputs();
@@ -443,6 +456,9 @@ function handleSubmit(event) {
 
   window.setTimeout(() => {
     setCalculatingState(false);
+    if (shouldScroll) {
+      scrollToResults();
+    }
   }, 420);
 }
 
