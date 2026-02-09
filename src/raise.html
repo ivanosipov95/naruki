@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Калькулятор повышения зарплаты</title>
+    <meta
+      name="description"
+      content="Калькулятор повышения: сравните проценты и суммы, посмотрите доход на руки с учетом прогрессивной шкалы НДФЛ."
+    />
+    <meta property="og:title" content="Калькулятор повышения зарплаты" />
+    <meta
+      property="og:description"
+      content="Узнайте, как повышение в процентах или сумме влияет на доход на руки по прогрессивной шкале."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta name="theme-color" content="#f6f0e9" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="is-loading">
+    <div class="skeleton" aria-hidden="true">
+      <div class="skeleton__page">
+        <section class="skeleton__hero">
+          <div class="skeleton__card">
+            <div class="sk sk-h-16 sk-w-70"></div>
+            <div class="sk sk-h-44 sk-w-100"></div>
+            <div class="sk sk-h-16 sk-w-60"></div>
+            <div class="sk sk-h-44 sk-w-100"></div>
+            <div class="skeleton__row">
+              <div class="sk sk-h-44 sk-w-45"></div>
+              <div class="sk sk-h-44 sk-w-20 sk-round"></div>
+            </div>
+            <div class="sk sk-h-12 sk-w-80"></div>
+          </div>
+          <div class="skeleton__text">
+            <div class="sk sk-h-12 sk-w-40"></div>
+            <div class="sk sk-h-36 sk-w-90"></div>
+            <div class="sk sk-h-16 sk-w-100"></div>
+            <div class="sk sk-h-16 sk-w-80"></div>
+          </div>
+        </section>
+
+        <section class="skeleton__summary">
+          <div class="skeleton__stat">
+            <div class="sk sk-h-12 sk-w-60"></div>
+            <div class="sk sk-h-28 sk-w-80"></div>
+            <div class="sk sk-h-12 sk-w-50"></div>
+          </div>
+          <div class="skeleton__stat">
+            <div class="sk sk-h-12 sk-w-60"></div>
+            <div class="sk sk-h-28 sk-w-80"></div>
+            <div class="sk sk-h-12 sk-w-50"></div>
+          </div>
+          <div class="skeleton__stat">
+            <div class="sk sk-h-12 sk-w-60"></div>
+            <div class="sk sk-h-28 sk-w-80"></div>
+            <div class="sk sk-h-12 sk-w-50"></div>
+          </div>
+        </section>
+
+        <section class="skeleton__details">
+          <div class="skeleton__card">
+            <div class="sk sk-h-18 sk-w-50"></div>
+            <div class="sk sk-h-12 sk-w-70"></div>
+            <div class="skeleton__list">
+              <div class="sk sk-h-48 sk-w-100"></div>
+              <div class="sk sk-h-48 sk-w-100"></div>
+              <div class="sk sk-h-48 sk-w-100"></div>
+              <div class="sk sk-h-48 sk-w-100"></div>
+            </div>
+          </div>
+          <div class="skeleton__card">
+            <div class="sk sk-h-18 sk-w-50"></div>
+            <div class="sk sk-h-12 sk-w-70"></div>
+            <div class="skeleton__list">
+              <div class="sk sk-h-16 sk-w-100"></div>
+              <div class="sk sk-h-16 sk-w-100"></div>
+              <div class="sk sk-h-16 sk-w-100"></div>
+              <div class="sk sk-h-16 sk-w-100"></div>
+              <div class="sk sk-h-16 sk-w-100"></div>
+              <div class="sk sk-h-16 sk-w-100"></div>
+              <div class="sk sk-h-16 sk-w-100"></div>
+              <div class="sk sk-h-16 sk-w-100"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+    <main class="page">
+      <section class="hero">
+        <div class="hero__panel">
+          <form id="raise-form" class="card">
+            <div class="field">
+              <label for="current-gross">Текущая зарплата в месяц до налогов, ₽</label>
+              <input
+                id="current-gross"
+                name="current-gross"
+                type="text"
+                inputmode="numeric"
+                min="0"
+                step="1000"
+                placeholder="Например, 150 000"
+                required
+              />
+            </div>
+
+            <div class="field">
+              <span class="field__label">Формат повышения</span>
+              <div class="segmented" role="radiogroup" aria-label="Формат повышения">
+                <label class="segmented__item">
+                  <input type="radio" name="raise-mode" value="percent" checked />
+                  <span>В процентах</span>
+                </label>
+                <label class="segmented__item">
+                  <input type="radio" name="raise-mode" value="amount" />
+                  <span>В сумме</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="field field--inline" data-mode-field="percent">
+              <label for="raise-percent">Желаемое повышение, %</label>
+              <input
+                id="raise-percent"
+                name="raise-percent"
+                type="text"
+                inputmode="decimal"
+                placeholder="Например, 15"
+              />
+            </div>
+
+            <div class="field field--inline" data-mode-field="amount">
+              <label for="raise-amount">Желаемое повышение, ₽</label>
+              <input
+                id="raise-amount"
+                name="raise-amount"
+                type="text"
+                inputmode="numeric"
+                placeholder="Например, 20 000"
+              />
+            </div>
+
+            <div class="field">
+              <label for="raise-start">Месяц, с которого действует повышение</label>
+              <select id="raise-start" name="raise-start" required>
+                <option value="1">Январь</option>
+                <option value="2">Февраль</option>
+                <option value="3">Март</option>
+                <option value="4">Апрель</option>
+                <option value="5">Май</option>
+                <option value="6">Июнь</option>
+                <option value="7">Июль</option>
+                <option value="8">Август</option>
+                <option value="9">Сентябрь</option>
+                <option value="10">Октябрь</option>
+                <option value="11">Ноябрь</option>
+                <option value="12">Декабрь</option>
+              </select>
+            </div>
+
+            <div class="actions">
+              <button class="primary" type="submit">Рассчитать</button>
+              <div class="share-wrap">
+                <button
+                  class="ghost ghost--icon"
+                  type="button"
+                  id="share-link"
+                  aria-label="Поделиться ссылкой"
+                  title="Поделиться ссылкой"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="18" cy="5" r="3" />
+                    <circle cx="6" cy="12" r="3" />
+                    <circle cx="18" cy="19" r="3" />
+                    <path d="M8.7 11l6.6-4.1M8.7 13l6.6 4.1" />
+                  </svg>
+                </button>
+                <span
+                  class="share-tooltip"
+                  id="share-status"
+                  role="status"
+                  aria-live="polite"
+                ></span>
+              </div>
+            </div>
+            <p class="calc-hint" id="calc-hint">Данные изменились — пересчитайте.</p>
+            <p class="hint">Ставки применяются к годовому доходу по прогрессивной шкале НДФЛ.</p>
+          </form>
+        </div>
+        <div class="hero__text">
+          <p class="eyebrow">Повышение 2026 · Налоги в расчетах</p>
+          <h1>Калькулятор повышения зарплаты</h1>
+          <p class="lead">
+            Выберите формат повышения, проверьте эквивалент в процентах и рублях и
+            сразу увидьте, как изменится доход на руки с учетом прогрессии по НДФЛ.
+          </p>
+          <p class="meta-note">Все расчеты ориентировочные и актуальны на 2026 год.</p>
+        </div>
+      </section>
+
+      <div class="calc-progress" aria-hidden="true"></div>
+      <section class="summary" aria-live="polite">
+        <div class="card stat">
+          <p class="stat__label">Текущая зарплата</p>
+          <p class="stat__value" id="summary-current-gross">—</p>
+          <p class="stat__meta" id="summary-current-net">—</p>
+        </div>
+        <div class="card stat">
+          <p class="stat__label">Повышение</p>
+          <p class="stat__value" id="summary-raise-amount">—</p>
+          <p class="stat__meta" id="summary-raise-percent">—</p>
+        </div>
+        <div class="card stat">
+          <p class="stat__label">Новая зарплата</p>
+          <p class="stat__value" id="summary-new-gross">—</p>
+          <p class="stat__meta" id="summary-new-net">—</p>
+        </div>
+        <div class="card stat highlight">
+          <p class="stat__label">Разница на руки за год</p>
+          <p class="stat__value" id="summary-net-delta">—</p>
+          <p class="stat__meta" id="summary-net-month">—</p>
+        </div>
+      </section>
+
+      <section class="details">
+        <div class="card compare">
+          <div class="compare__header">
+            <h2>Годовые итоги</h2>
+            <p>Сравнение текущего уровня и после повышения.</p>
+          </div>
+          <div class="compare__table" id="compare-table"></div>
+        </div>
+
+        <div class="card chart">
+          <div class="chart__header">
+            <h2>Доход по месяцам</h2>
+            <p>На руки: до и после повышения по мере роста годовой базы.</p>
+          </div>
+          <div class="chart__grid" id="chart-grid"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>Расчет ориентировочный и не является налоговой консультацией.</p>
+      <div class="footer__links">
+        <a href="index.html">Калькулятор зарплаты</a>
+        <a href="policy.html">Политика конфиденциальности</a>
+        <a href="contacts.html">Контакты</a>
+      </div>
+    </footer>
+
+    <script src="raise.js"></script>
+  </body>
+</html>
