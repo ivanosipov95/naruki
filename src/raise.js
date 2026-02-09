@@ -141,7 +141,7 @@ function parsePercentInput(value) {
 function formatPercentInput(value) {
   if (!Number.isFinite(value) || value === 0) return "";
   const rounded = Math.round(value * 10) / 10;
-  return String(rounded).replace(/\./g, ",");
+  return String(rounded);
 }
 
 function countDigitsBefore(value, caretIndex) {
@@ -309,27 +309,29 @@ function renderCompareTable(totals) {
       delta: totals.delta.netYear,
     },
   ];
-
-  const header = document.createElement("div");
-  header.className = "compare-row compare-row--header";
-  header.innerHTML = `
-    <span></span>
-    <span>Сейчас</span>
-    <span>После</span>
-    <span>Разница</span>
-  `;
-  compareTableEl.appendChild(header);
+  compareTableEl.classList.add("compare-cards");
 
   rows.forEach((row) => {
-    const rowEl = document.createElement("div");
-    rowEl.className = "compare-row";
-    rowEl.innerHTML = `
-      <span class="compare-row__label">${row.label}</span>
-      <span>${formatter.format(row.current)}</span>
-      <span>${formatter.format(row.next)}</span>
-      <span class="compare-row__delta">${formatter.format(row.delta)}</span>
+    const card = document.createElement("div");
+    card.className = "compare-card";
+    card.innerHTML = `
+      <div class="compare-card__title">${row.label}</div>
+      <div class="compare-card__grid">
+        <div class="compare-card__cell">
+          <span class="compare-card__label">Сейчас</span>
+          <span class="compare-card__value">${formatter.format(row.current)}</span>
+        </div>
+        <div class="compare-card__cell">
+          <span class="compare-card__label">После</span>
+          <span class="compare-card__value">${formatter.format(row.next)}</span>
+        </div>
+        <div class="compare-card__cell compare-card__cell--delta">
+          <span class="compare-card__label">Разница</span>
+          <span class="compare-card__value">${formatter.format(row.delta)}</span>
+        </div>
+      </div>
     `;
-    compareTableEl.appendChild(rowEl);
+    compareTableEl.appendChild(card);
   });
 }
 
@@ -469,7 +471,9 @@ raiseAmountInput.addEventListener("input", () => {
 });
 
 raisePercentInput.addEventListener("input", () => {
-  const sanitized = raisePercentInput.value.replace(/[^\d.,]/g, "");
+  const sanitized = raisePercentInput.value
+    .replace(/[^\d.,]/g, "")
+    .replace(/,/g, ".");
   raisePercentInput.value = sanitized;
   setDirtyState(true);
 });

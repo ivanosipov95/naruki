@@ -432,6 +432,10 @@ body.is-loading .footer {
   align-items: center;
 }
 
+.actions--spaced {
+  margin-top: 8px;
+}
+
 .share-wrap {
   position: relative;
   display: inline-flex;
@@ -843,6 +847,61 @@ body.is-calculating .calc-progress::after {
   gap: 10px;
 }
 
+.compare-cards {
+  display: grid;
+  gap: 14px;
+}
+
+.compare-card {
+  background: #fff;
+  border-radius: var(--radius-md);
+  padding: 16px;
+  border: 1px solid rgba(15, 19, 30, 0.08);
+  box-shadow: 0 14px 26px rgba(17, 24, 39, 0.06);
+  display: grid;
+  gap: 12px;
+}
+
+.compare-card__title {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.compare-card__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.compare-card__cell {
+  display: grid;
+  gap: 6px;
+  background: #f7f3ee;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(15, 19, 30, 0.05);
+}
+
+.compare-card__cell--delta {
+  background: #dff6ee;
+  color: #0c7c6b;
+}
+
+.compare-card__label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+
+.compare-card__cell--delta .compare-card__label {
+  color: #0c7c6b;
+}
+
+.compare-card__value {
+  font-weight: 700;
+}
+
 .compare-row {
   display: grid;
   grid-template-columns: minmax(140px, 1.2fr) repeat(3, minmax(120px, 1fr));
@@ -1007,6 +1066,10 @@ body.is-calculating .calc-progress::after {
 
   .compare-row--header {
     display: none;
+  }
+
+  .compare-card__grid {
+    grid-template-columns: 1fr;
   }
 }
 
