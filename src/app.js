@@ -309,6 +309,13 @@ function handleSubmit(event) {
   const shouldScroll = event?.isTrusted;
   setCalculatingState(true);
   const { gross, startMonth } = getCurrentInputs();
+  if (shouldScroll && gross <= 0) {
+    grossInput.setCustomValidity("Введите значение больше 0.");
+    grossInput.reportValidity();
+    setCalculatingState(false);
+    return;
+  }
+  grossInput.setCustomValidity("");
   const results = calculateAll(gross, startMonth);
 
   renderSummary(results);
@@ -335,6 +342,7 @@ grossInput.addEventListener("input", () => {
   grossInput.value = formatted;
   const nextCaret = caretFromDigits(formatted, digitsBefore);
   grossInput.setSelectionRange(nextCaret, nextCaret);
+  grossInput.setCustomValidity("");
   setDirtyState(true);
 });
 
@@ -358,7 +366,15 @@ function setShareStatus(message) {
 }
 
 async function copyShareLink() {
-  handleSubmit(new Event("submit"));
+  const { gross, startMonth } = getCurrentInputs();
+  const results = calculateAll(gross, startMonth);
+
+  renderSummary(results);
+  renderBrackets(results.breakdown, results.totalGross);
+  renderChart(results.months);
+  syncUrlParams({ gross, startMonth });
+  setDirtyState(false);
+
   const url = window.location.href;
   try {
     await navigator.clipboard.writeText(url);

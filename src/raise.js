@@ -246,6 +246,7 @@ function setMode(mode) {
     if (input) {
       input.readOnly = !isActive;
       input.setAttribute("aria-disabled", String(!isActive));
+      input.required = isActive;
     }
   });
 }
@@ -275,6 +276,25 @@ function getCurrentInputs() {
     mode,
     startMonth,
   };
+}
+
+function validateRaiseInput(mode) {
+  if (mode === "percent") {
+    const value = parsePercentInput(raisePercentInput.value);
+    if (value <= 0) {
+      raisePercentInput.setCustomValidity("Введите значение больше 0.");
+      raisePercentInput.reportValidity();
+      return false;
+    }
+  } else {
+    const value = parseGrossInput(raiseAmountInput.value);
+    if (value <= 0) {
+      raiseAmountInput.setCustomValidity("Введите значение больше 0.");
+      raiseAmountInput.reportValidity();
+      return false;
+    }
+  }
+  return true;
 }
 
 function renderSummary({ currentGross, newGross, raiseAmount, raisePercent, totals }) {
@@ -447,6 +467,15 @@ function handleSubmit(event) {
   event.preventDefault();
   if (isCalculating) return;
   const shouldScroll = event?.isTrusted;
+  const mode = getSelectedMode();
+  const currentGross = clampNumber(parseGrossInput(currentGrossInput.value));
+  if (shouldScroll && currentGross <= 0) {
+    currentGrossInput.setCustomValidity("Введите значение больше 0.");
+    currentGrossInput.reportValidity();
+    return;
+  }
+  currentGrossInput.setCustomValidity("");
+  if (shouldScroll && !validateRaiseInput(mode)) return;
   setCalculatingState(true);
 
   const inputs = getCurrentInputs();
@@ -472,6 +501,7 @@ currentGrossInput.addEventListener("input", () => {
   currentGrossInput.value = formatted;
   const nextCaret = caretFromDigits(formatted, digitsBefore);
   currentGrossInput.setSelectionRange(nextCaret, nextCaret);
+  currentGrossInput.setCustomValidity("");
   setDirtyState(true);
 });
 
@@ -483,6 +513,7 @@ raiseAmountInput.addEventListener("input", () => {
   raiseAmountInput.value = formatted;
   const nextCaret = caretFromDigits(formatted, digitsBefore);
   raiseAmountInput.setSelectionRange(nextCaret, nextCaret);
+  raiseAmountInput.setCustomValidity("");
   setDirtyState(true);
 });
 
@@ -491,6 +522,7 @@ raisePercentInput.addEventListener("input", () => {
     .replace(/[^\d.,]/g, "")
     .replace(/,/g, ".");
   raisePercentInput.value = sanitized;
+  raisePercentInput.setCustomValidity("");
   setDirtyState(true);
 });
 
@@ -521,7 +553,11 @@ function setShareStatus(message) {
 }
 
 async function copyShareLink() {
-  handleSubmit(new Event("submit"));
+  const inputs = getCurrentInputs();
+  renderAll(inputs);
+  syncUrlParams(inputs);
+  setDirtyState(false);
+
   const url = window.location.href;
   try {
     await navigator.clipboard.writeText(url);
