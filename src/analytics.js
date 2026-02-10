@@ -47,6 +47,15 @@ function loadMetrika() {
   });
 }
 
+function trackGoal(name, params) {
+  if (typeof window.ym !== "function") return;
+  try {
+    window.ym(YM_COUNTER_ID, "reachGoal", name, params);
+  } catch (error) {
+    // Ignore tracking errors.
+  }
+}
+
 function setupConsentBanner() {
   const banner = document.querySelector("#cookie-banner");
   if (!banner) return;
@@ -84,10 +93,25 @@ function setupConsentBanner() {
   });
 }
 
+function setupGoalTracking() {
+  document.addEventListener("click", (event) => {
+    const link = event.target.closest("a");
+    if (!link) return;
+    const href = link.getAttribute("href") || "";
+    if (href.includes("contacts.html")) {
+      trackGoal("contacts_click", { page: window.location.pathname });
+    }
+  });
+}
+
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", setupConsentBanner, {
     once: true,
   });
+  document.addEventListener("DOMContentLoaded", setupGoalTracking, { once: true });
 } else {
   setupConsentBanner();
+  setupGoalTracking();
 }
+
+window.narukiTrackGoal = trackGoal;

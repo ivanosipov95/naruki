@@ -19,6 +19,12 @@ const buttonLabels = {
   calculating: "Считаем...",
 };
 
+function trackGoal(name, params) {
+  if (typeof window.narukiTrackGoal === "function") {
+    window.narukiTrackGoal(name, params);
+  }
+}
+
 function clearLoadingState() {
   document.body.classList.remove("is-loading");
   document.body.classList.remove("is-transitioning");
@@ -48,6 +54,7 @@ function setupCalcSwitchTransition() {
       }
       const href = tab.getAttribute("href");
       if (!href) return;
+      trackGoal("switch_calc", { from: "salary", to: href });
       event.preventDefault();
       document.body.classList.add("is-transitioning");
       window.setTimeout(() => {
@@ -390,6 +397,9 @@ function handleSubmit(event) {
 
   syncUrlParams({ gross, startMonth });
   setDirtyState(false);
+  if (shouldScroll) {
+    trackGoal("calc_submit", { calculator: "salary" });
+  }
   window.setTimeout(() => {
     setCalculatingState(false);
     if (shouldScroll) {
@@ -432,6 +442,7 @@ function setShareStatus(message) {
 }
 
 async function copyShareLink() {
+  trackGoal("share_click", { calculator: "salary" });
   const { gross, startMonth } = getCurrentInputs();
   const results = calculateAll(gross, startMonth);
 

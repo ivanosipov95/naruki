@@ -27,6 +27,12 @@ const buttonLabels = {
   calculating: "Считаем...",
 };
 
+function trackGoal(name, params) {
+  if (typeof window.narukiTrackGoal === "function") {
+    window.narukiTrackGoal(name, params);
+  }
+}
+
 function clearLoadingState() {
   document.body.classList.remove("is-loading");
   document.body.classList.remove("is-transitioning");
@@ -56,6 +62,7 @@ function setupCalcSwitchTransition() {
       }
       const href = tab.getAttribute("href");
       if (!href) return;
+      trackGoal("switch_calc", { from: "raise", to: href });
       event.preventDefault();
       document.body.classList.add("is-transitioning");
       window.setTimeout(() => {
@@ -552,6 +559,9 @@ function handleSubmit(event) {
   renderAll(inputs);
   syncUrlParams(inputs);
   setDirtyState(false);
+  if (shouldScroll) {
+    trackGoal("calc_submit", { calculator: "raise" });
+  }
 
   window.setTimeout(() => {
     setCalculatingState(false);
@@ -632,6 +642,7 @@ function setShareStatus(message) {
 }
 
 async function copyShareLink() {
+  trackGoal("share_click", { calculator: "raise" });
   const inputs = getCurrentInputs();
   renderAll(inputs);
   syncUrlParams(inputs);
