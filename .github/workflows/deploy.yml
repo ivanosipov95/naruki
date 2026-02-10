@@ -54,9 +54,8 @@ jobs:
             -e "ssh -p $PORT" \
             src/ "$SSH_USER@$SSH_HOST:$RELEASE_DIR/"
 
-      - name: Activate release
+      - name: Promote release to root
         run: |
           PORT="${SSH_PORT:-22}"
           RELEASE_DIR="$DEPLOY_PATH/releases/$RELEASE_VERSION"
-          CURRENT_LINK="$DEPLOY_PATH/current"
-          ssh -p "$PORT" "$SSH_USER@$SSH_HOST" "ln -sfn '$RELEASE_DIR' '$CURRENT_LINK'"
+          ssh -p "$PORT" "$SSH_USER@$SSH_HOST" "rsync -a --delete '$RELEASE_DIR/' '$DEPLOY_PATH/'"
