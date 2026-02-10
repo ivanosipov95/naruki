@@ -58,4 +58,4 @@ jobs:
         run: |
           PORT="${SSH_PORT:-22}"
           RELEASE_DIR="$DEPLOY_PATH/releases/$RELEASE_VERSION"
-          ssh -p "$PORT" "$SSH_USER@$SSH_HOST" "rsync -a --delete '$RELEASE_DIR/' '$DEPLOY_PATH/'"
+          ssh -p "$PORT" "$SSH_USER@$SSH_HOST" "rsync -a --delete --exclude 'releases/' --exclude '.git' --exclude '.github' '$RELEASE_DIR/' '$DEPLOY_PATH/'"
