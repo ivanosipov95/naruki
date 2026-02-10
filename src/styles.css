@@ -794,6 +794,66 @@ body.is-dirty .details {
   filter: saturate(0.9);
 }
 
+.cookie-banner {
+  position: fixed;
+  left: 24px;
+  right: 24px;
+  bottom: calc(24px + env(safe-area-inset-bottom));
+  z-index: 50;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid rgba(15, 19, 30, 0.08);
+  border-radius: 18px;
+  padding: 16px 18px calc(16px + env(safe-area-inset-bottom));
+  box-shadow: 0 20px 40px rgba(15, 19, 30, 0.12);
+}
+
+.cookie-banner--hidden {
+  display: none;
+}
+
+.cookie-banner__text {
+  display: grid;
+  gap: 6px;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.cookie-banner__text strong {
+  color: var(--ink);
+  font-size: 1rem;
+}
+
+.cookie-banner__actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 720px) {
+  .cookie-banner {
+    left: 12px;
+    right: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cookie-banner__actions {
+    order: -1;
+    justify-content: stretch;
+  }
+
+  .cookie-banner__actions .ghost,
+  .cookie-banner__actions .primary {
+    width: 100%;
+    text-align: center;
+  }
+}
+
 .calc-progress {
   position: relative;
   height: 4px;
