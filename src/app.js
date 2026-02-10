@@ -59,6 +59,34 @@ function setupCalcSwitchTransition() {
 
 setupCalcSwitchTransition();
 
+function setupCalcSwitchMenu() {
+  const switchEl = document.querySelector(".calc-switch");
+  const toggle = document.querySelector(".calc-switch__toggle");
+  if (!switchEl || !toggle) return;
+
+  const closeMenu = () => {
+    switchEl.classList.remove("calc-switch--open");
+    toggle.setAttribute("aria-expanded", "false");
+  };
+
+  toggle.addEventListener("click", () => {
+    const isOpen = switchEl.classList.toggle("calc-switch--open");
+    toggle.setAttribute("aria-expanded", String(isOpen));
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!switchEl.contains(event.target)) {
+      closeMenu();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeMenu();
+  });
+}
+
+setupCalcSwitchMenu();
+
 const formatter = new Intl.NumberFormat("ru-RU", {
   style: "currency",
   currency: "RUB",
@@ -156,13 +184,21 @@ function setCalculatingState(active) {
 
 function scrollToResults() {
   if (!summarySection) return;
+  if (document.activeElement instanceof HTMLElement) {
+    document.activeElement.blur();
+  }
   const prefersReduced = window.matchMedia(
     "(prefers-reduced-motion: reduce)"
   ).matches;
+  const behavior = prefersReduced ? "auto" : "smooth";
   summarySection.scrollIntoView({
-    behavior: prefersReduced ? "auto" : "smooth",
+    behavior,
     block: "start",
   });
+  const top = summarySection.getBoundingClientRect().top + window.pageYOffset - 12;
+  window.setTimeout(() => {
+    window.scrollTo({ top, behavior });
+  }, 40);
 }
 
 function countDigitsBefore(value, caretIndex) {

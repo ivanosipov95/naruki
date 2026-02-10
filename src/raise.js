@@ -5,6 +5,7 @@ const raiseAmountInput = document.querySelector("#raise-amount");
 const raiseStartInput = document.querySelector("#raise-start");
 const modeInputs = document.querySelectorAll('input[name="raise-mode"]');
 const modeFields = document.querySelectorAll("[data-mode-field]");
+const modeLabels = document.querySelectorAll(".segmented__item");
 
 const summaryCurrentGrossEl = document.querySelector("#summary-current-gross");
 const summaryCurrentNetEl = document.querySelector("#summary-current-net");
@@ -65,6 +66,34 @@ function setupCalcSwitchTransition() {
 }
 
 setupCalcSwitchTransition();
+
+function setupCalcSwitchMenu() {
+  const switchEl = document.querySelector(".calc-switch");
+  const toggle = document.querySelector(".calc-switch__toggle");
+  if (!switchEl || !toggle) return;
+
+  const closeMenu = () => {
+    switchEl.classList.remove("calc-switch--open");
+    toggle.setAttribute("aria-expanded", "false");
+  };
+
+  toggle.addEventListener("click", () => {
+    const isOpen = switchEl.classList.toggle("calc-switch--open");
+    toggle.setAttribute("aria-expanded", String(isOpen));
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!switchEl.contains(event.target)) {
+      closeMenu();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeMenu();
+  });
+}
+
+setupCalcSwitchMenu();
 
 const formatter = new Intl.NumberFormat("ru-RU", {
   style: "currency",
@@ -413,10 +442,21 @@ function renderChart(currentMonths, newMonths) {
     row.innerHTML = `
       <div class="month-row__label month-row__label--compare">
         <span>${label}</span>
-        <span class="month-row__values">
+        <span class="month-row__values month-row__values--pills">
           <span class="pill">Было: ${formatter.format(item.net)}</span>
           <span class="pill pill--new">Стало: ${formatter.format(nextItem.net)}</span>
           <span class="pill pill--delta">Разница: ${formatter.format(delta)}</span>
+        </span>
+        <span class="month-row__values month-row__values--inline">
+          <span class="inline-pill inline-pill--base">${formatter.format(
+            item.net
+          )}</span>
+          <span class="inline-pill inline-pill--new">${formatter.format(
+            nextItem.net
+          )}</span>
+          <span class="inline-pill inline-pill--delta">${formatter.format(
+            delta
+          )}</span>
         </span>
       </div>
     `;
@@ -563,6 +603,15 @@ raiseStartInput.addEventListener("change", () => {
 modeInputs.forEach((input) => {
   input.addEventListener("change", () => {
     setMode(getSelectedMode());
+    setDirtyState(true);
+  });
+});
+
+modeLabels.forEach((label) => {
+  label.addEventListener("click", () => {
+    const input = label.querySelector('input[name="raise-mode"]');
+    if (!input || input.checked) return;
+    setMode(input.value);
     setDirtyState(true);
   });
 });

@@ -90,12 +90,23 @@
     </div>
     <main class="page">
       <nav class="calc-switch" aria-label="Калькуляторы">
+        <button
+          class="calc-switch__toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="calc-switch-menu"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16" />
+          </svg>
+          <span>Калькуляторы</span>
+        </button>
         <div class="calc-switch__label">
           <span class="eyebrow">Калькуляторы</span>
           <span class="calc-switch__title">Доступно два вида расчетов</span>
           <span class="calc-switch__note">Выберите нужный калькулятор.</span>
         </div>
-        <div class="calc-switch__tabs" role="tablist">
+        <div class="calc-switch__tabs" role="tablist" id="calc-switch-menu">
           <a
             class="calc-switch__tab"
             href="index.html"
