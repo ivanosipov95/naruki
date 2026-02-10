@@ -287,12 +287,18 @@ body.is-loading .skeleton {
 .page,
 .footer {
   opacity: 1;
-  transition: opacity 0.35s ease;
+  transition: opacity 0.1s ease;
 }
 
 body.is-loading .page,
 body.is-loading .footer {
   opacity: 0;
+  pointer-events: none;
+}
+
+body.is-transitioning .page,
+body.is-transitioning .footer {
+  opacity: 0.4;
   pointer-events: none;
 }
 
@@ -1143,6 +1149,18 @@ body.is-calculating .calc-progress::after {
 
   .compare-card__grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page,
+  .footer {
+    transition: none;
+  }
+
+  body.is-transitioning .page,
+  body.is-transitioning .footer {
+    opacity: 1;
   }
 }
 

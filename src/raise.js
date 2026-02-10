@@ -28,6 +28,7 @@ const buttonLabels = {
 
 function clearLoadingState() {
   document.body.classList.remove("is-loading");
+  document.body.classList.remove("is-transitioning");
 }
 
 if (document.readyState === "complete") {
@@ -35,6 +36,35 @@ if (document.readyState === "complete") {
 } else {
   window.addEventListener("load", clearLoadingState, { once: true });
 }
+
+function setupCalcSwitchTransition() {
+  const tabs = document.querySelectorAll(".calc-switch__tab");
+  if (!tabs.length) return;
+  tabs.forEach((tab) => {
+    if (tab.getAttribute("aria-current") === "page") return;
+    tab.addEventListener("click", (event) => {
+      if (
+        event.defaultPrevented ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.shiftKey ||
+        event.altKey ||
+        event.button !== 0
+      ) {
+        return;
+      }
+      const href = tab.getAttribute("href");
+      if (!href) return;
+      event.preventDefault();
+      document.body.classList.add("is-transitioning");
+      window.setTimeout(() => {
+        window.location.href = href;
+      }, 30);
+    });
+  });
+}
+
+setupCalcSwitchTransition();
 
 const formatter = new Intl.NumberFormat("ru-RU", {
   style: "currency",
