@@ -1,0 +1,48 @@
+name: Switch Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version to activate (e.g. v1.0.0)"
+        required: true
+        type: string
+
+jobs:
+  switch:
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_VERSION: ${{ github.event.inputs.version }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+      SSH_PORT: ${{ secrets.SSH_PORT }}
+      DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+    steps:
+      - name: Validate inputs
+        run: |
+          if [ -z "$RELEASE_VERSION" ]; then
+            echo "version input is required"
+            exit 1
+          fi
+          if [ -z "$SSH_HOST" ] || [ -z "$SSH_USER" ] || [ -z "$DEPLOY_PATH" ]; then
+            echo "SSH_HOST, SSH_USER, DEPLOY_PATH secrets are required"
+            exit 1
+          fi
+
+      - name: Start ssh-agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add server to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          PORT="${SSH_PORT:-22}"
+          ssh-keyscan -p "$PORT" -H "$SSH_HOST" >> ~/.ssh/known_hosts
+
+      - name: Switch to release
+        run: |
+          PORT="${SSH_PORT:-22}"
+          RELEASE_DIR="$DEPLOY_PATH/releases/$RELEASE_VERSION"
+          ssh -p "$PORT" "$SSH_USER@$SSH_HOST" "if [ ! -d '$RELEASE_DIR' ]; then echo 'Release not found: $RELEASE_DIR'; exit 1; fi"
+          ssh -p "$PORT" "$SSH_USER@$SSH_HOST" "rsync -a --delete --exclude 'releases/' --exclude '.git' --exclude '.github' '$RELEASE_DIR/' '$DEPLOY_PATH/'"
