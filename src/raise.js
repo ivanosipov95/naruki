@@ -711,4 +711,6 @@ if (presetValue) {
 }
 
 setDirtyState(false);
-handleSubmit(new Event("submit"));
+if (presetGross !== null && presetValue) {
+  handleSubmit(new Event("submit"));
+}

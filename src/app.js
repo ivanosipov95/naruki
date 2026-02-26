@@ -512,4 +512,6 @@ if (presetGross !== null) {
 startInput.value = String(presetStart ?? 1);
 setDirtyState(false);
 
-handleSubmit(new Event("submit"));
+if (presetGross !== null) {
+  handleSubmit(new Event("submit"));
+}
