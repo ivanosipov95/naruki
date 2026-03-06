@@ -1003,34 +1003,64 @@ body.is-calculating .calc-progress::after {
 }
 
 .chart__grid {
-  display: grid;
-  gap: 10px;
-}
-
-.month-row {
-  display: grid;
-  gap: 8px;
-}
-
-.month-row__label {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.9rem;
-  color: var(--muted);
-}
-
-.month-row__bar {
-  height: 8px;
-  background: rgba(43, 37, 34, 0.1);
-  border-radius: 999px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: #fff;
   overflow: hidden;
 }
 
-.month-row__fill {
-  height: 100%;
-  background: var(--ink);
-  border-radius: 999px;
-  transition: width 0.4s ease;
+.month-table {
+  display: grid;
+}
+
+.month-table__head,
+.month-table__row {
+  display: grid;
+  grid-template-columns: minmax(120px, 1fr) minmax(120px, auto) minmax(120px, auto);
+  gap: 10px;
+  align-items: center;
+  padding: 12px 14px;
+}
+
+.month-table__head {
+  background: var(--surface-soft);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.month-table__row + .month-table__row {
+  border-top: 1px solid rgba(43, 37, 34, 0.08);
+}
+
+.month-table__month {
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.month-table__value {
+  font-feature-settings: "tnum";
+}
+
+.month-table__net {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.month-table__tax {
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.month-table__tax--peak {
+  color: var(--ink);
+}
+
+.text-right {
+  text-align: right;
 }
 
 .compare__header h2 {
@@ -1342,6 +1372,28 @@ body.is-calculating .calc-progress::after {
     font-size: 0.82rem;
     display: flex;
     gap: 12px;
+  }
+
+  .month-table__head,
+  .month-table__row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+  }
+
+  .month-table__head {
+    display: none;
+  }
+
+  .month-table__row {
+    padding: 12px;
+  }
+
+  .month-table__month {
+    font-weight: 600;
+  }
+
+  .month-table__value {
+    text-align: left;
   }
 
   .calc-switch {

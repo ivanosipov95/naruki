@@ -332,25 +332,34 @@ function renderBrackets(breakdown, totalGross) {
 
 function renderChart(months) {
   chartGridEl.innerHTML = "";
-  const maxNet = months.reduce((max, month) => Math.max(max, month.net), 0);
+  const maxTax = months.reduce((max, month) => Math.max(max, month.tax), 0);
+
+  const table = document.createElement("div");
+  table.className = "month-table";
+  table.innerHTML = `
+    <div class="month-table__head">
+      <span>Месяц</span>
+      <span class="text-right">На руки</span>
+      <span class="text-right">Налог</span>
+    </div>
+  `;
 
   months.forEach((item) => {
     const row = document.createElement("div");
-    row.className = "month-row";
-    const width = maxNet === 0 ? 0 : (item.net / maxNet) * 100;
+    row.className = "month-table__row";
     const label = monthNames[item.month - 1];
-    const value = item.working ? formatter.format(item.net) : "—";
+    const netValue = item.working ? formatter.format(item.net) : "—";
+    const taxValue = item.working ? formatter.format(item.tax) : "—";
+    const peakTaxClass = item.tax > 0 && item.tax === maxTax ? " month-table__tax--peak" : "";
     row.innerHTML = `
-      <div class="month-row__label">
-        <span>${label}</span>
-        <span>${value}</span>
-      </div>
-      <div class="month-row__bar">
-        <div class="month-row__fill" style="width: ${width}%"></div>
-      </div>
+      <span class="month-table__month">${label}</span>
+      <span class="month-table__value month-table__net text-right">${netValue}</span>
+      <span class="month-table__value month-table__tax text-right${peakTaxClass}">${taxValue}</span>
     `;
-    chartGridEl.appendChild(row);
+    table.appendChild(row);
   });
+
+  chartGridEl.appendChild(table);
 }
 
 function declineMonth(count) {
