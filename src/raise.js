@@ -407,68 +407,61 @@ function renderCompareTable(totals) {
       delta: totals.delta.netYear,
     },
   ];
-  compareTableEl.classList.add("compare-cards");
+  compareTableEl.classList.remove("compare-cards");
+  compareTableEl.innerHTML = `
+    <div class="compare-row compare-row--header">
+      <span>Показатель</span>
+      <span class="text-right">Сейчас</span>
+      <span class="text-right">После</span>
+      <span class="text-right">Разница</span>
+    </div>
+  `;
 
   rows.forEach((row) => {
-    const card = document.createElement("div");
-    card.className = "compare-card";
-    card.innerHTML = `
-      <div class="compare-card__title">${row.label}</div>
-      <div class="compare-card__grid">
-        <div class="compare-card__cell">
-          <span class="compare-card__label">Сейчас</span>
-          <span class="compare-card__value">${formatter.format(row.current)}</span>
-        </div>
-        <div class="compare-card__cell">
-          <span class="compare-card__label">После</span>
-          <span class="compare-card__value">${formatter.format(row.next)}</span>
-        </div>
-        <div class="compare-card__cell compare-card__cell--delta">
-          <span class="compare-card__label">Разница</span>
-          <span class="compare-card__value">${formatter.format(row.delta)}</span>
-        </div>
-      </div>
+    const rowEl = document.createElement("div");
+    rowEl.className = "compare-row";
+    rowEl.innerHTML = `
+      <span class="compare-row__label">${row.label}</span>
+      <span class="text-right">${formatter.format(row.current)}</span>
+      <span class="text-right">${formatter.format(row.next)}</span>
+      <span class="compare-row__delta text-right">${formatter.format(row.delta)}</span>
     `;
-    compareTableEl.appendChild(card);
+    compareTableEl.appendChild(rowEl);
   });
 }
 
 function renderChart(currentMonths, newMonths) {
   chartGridEl.innerHTML = "";
-  const maxNet = Math.max(
-    ...currentMonths.map((item) => item.net),
-    ...newMonths.map((item) => item.net)
-  );
+  const table = document.createElement("div");
+  table.className = "month-table month-table--compare";
+  table.innerHTML = `
+    <div class="month-table__head">
+      <span>Месяц</span>
+      <span class="text-right">Было</span>
+      <span class="text-right">Стало</span>
+      <span class="text-right">Разница</span>
+    </div>
+  `;
+
   currentMonths.forEach((item, index) => {
     const nextItem = newMonths[index];
     const label = monthNames[item.month - 1];
     const delta = nextItem.net - item.net;
 
     const row = document.createElement("div");
-    row.className = "month-row month-row--compare";
+    row.className = "month-table__row";
     row.innerHTML = `
-      <div class="month-row__label month-row__label--compare">
-        <span>${label}</span>
-        <span class="month-row__values month-row__values--pills">
-          <span class="pill">Было: ${formatter.format(item.net)}</span>
-          <span class="pill pill--new">Стало: ${formatter.format(nextItem.net)}</span>
-          <span class="pill pill--delta">Разница: ${formatter.format(delta)}</span>
-        </span>
-        <span class="month-row__values month-row__values--inline">
-          <span class="inline-pill inline-pill--base">${formatter.format(
-            item.net
-          )}</span>
-          <span class="inline-pill inline-pill--new">${formatter.format(
-            nextItem.net
-          )}</span>
-          <span class="inline-pill inline-pill--delta">${formatter.format(
-            delta
-          )}</span>
-        </span>
-      </div>
+      <span class="month-table__month">${label}</span>
+      <span class="month-table__value text-right">${formatter.format(item.net)}</span>
+      <span class="month-table__value month-table__net text-right">${formatter.format(
+        nextItem.net
+      )}</span>
+      <span class="month-table__value text-right">${formatter.format(delta)}</span>
     `;
-    chartGridEl.appendChild(row);
+    table.appendChild(row);
   });
+
+  chartGridEl.appendChild(table);
 }
 
 function calculateTotalsFromMonths(currentMonths, newMonths) {

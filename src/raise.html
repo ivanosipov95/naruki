@@ -56,7 +56,7 @@
       }
     </script>
   </head>
-  <body class="is-loading">
+  <body class="is-loading salary-page">
     <div class="skeleton" aria-hidden="true">
       <div class="skeleton__page">
         <section class="skeleton__hero">
@@ -127,13 +127,8 @@
     </div>
     <main class="page">
       <nav class="calc-switch" aria-label="Калькуляторы">
-        <a class="calc-switch__brand" href="index.html" aria-label="Naruki">
-          <svg class="calc-switch__brand-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M16 12C16 12 14.5 9 12 9C9.5 9 5 13 5 13" />
-            <path d="M5 13L9 18L19 5" />
-            <path d="M5 13C5 13 7 16 9 16" />
-          </svg>
-          <span>Naruki</span>
+        <a class="calc-switch__brand" href="index.html" aria-label="Naruki.online">
+          <span>Naruki.online</span>
         </a>
         <button
           class="calc-switch__toggle"
@@ -264,56 +259,55 @@
             <p class="hint">Ставки применяются к годовому доходу по прогрессивной шкале НДФЛ.</p>
           </form>
         </div>
-        <div class="hero__text">
-          <p class="eyebrow">Повышение 2026 · Налоги в расчетах</p>
-          <h1>Калькулятор повышения зарплаты</h1>
-          <p class="lead">
-            Выберите формат повышения, проверьте эквивалент в процентах и рублях и
-            сразу увидьте, как изменится доход на руки с учетом прогрессии по НДФЛ.
-          </p>
-          <p class="meta-note">Все расчеты ориентировочные и актуальны на 2026 год.</p>
+        <div class="hero__content">
+          <div class="hero__text">
+            <p class="eyebrow">Повышение 2026 · Налоги в расчетах</p>
+            <h1>Калькулятор повышения зарплаты</h1>
+            <p class="lead">
+              Выберите формат повышения, проверьте эквивалент в процентах и рублях и
+              сразу увидьте, как изменится доход на руки с учетом прогрессии по НДФЛ.
+            </p>
+            <p class="meta-note">Все расчеты ориентировочные и актуальны на 2026 год.</p>
+          </div>
+          <section class="summary summary--hero summary--raise" aria-live="polite">
+            <div class="card stat">
+              <p class="stat__label">Текущая зарплата</p>
+              <p class="stat__value" id="summary-current-gross">—</p>
+              <p class="stat__meta" id="summary-current-net">—</p>
+            </div>
+            <div class="card stat">
+              <p class="stat__label">Повышение</p>
+              <p class="stat__value" id="summary-raise-amount">—</p>
+              <p class="stat__meta" id="summary-raise-percent">—</p>
+            </div>
+            <div class="card stat">
+              <p class="stat__label">Новая зарплата</p>
+              <p class="stat__value" id="summary-new-gross">—</p>
+              <p class="stat__meta" id="summary-new-net">—</p>
+            </div>
+            <div class="card stat highlight">
+              <p class="stat__label">Разница на руки за год</p>
+              <p class="stat__value" id="summary-net-delta">—</p>
+              <p class="stat__meta" id="summary-net-month">—</p>
+            </div>
+          </section>
         </div>
       </section>
 
       <div class="calc-progress" aria-hidden="true"></div>
-      <section class="summary" aria-live="polite">
-        <div class="card stat">
-          <p class="stat__label">Текущая зарплата</p>
-          <p class="stat__value" id="summary-current-gross">—</p>
-          <p class="stat__meta" id="summary-current-net">—</p>
-        </div>
-        <div class="card stat">
-          <p class="stat__label">Повышение</p>
-          <p class="stat__value" id="summary-raise-amount">—</p>
-          <p class="stat__meta" id="summary-raise-percent">—</p>
-        </div>
-        <div class="card stat">
-          <p class="stat__label">Новая зарплата</p>
-          <p class="stat__value" id="summary-new-gross">—</p>
-          <p class="stat__meta" id="summary-new-net">—</p>
-        </div>
-        <div class="card stat highlight">
-          <p class="stat__label">Разница на руки за год</p>
-          <p class="stat__value" id="summary-net-delta">—</p>
-          <p class="stat__meta" id="summary-net-month">—</p>
-        </div>
-      </section>
-
       <section class="details">
-        <div class="card compare">
-          <div class="compare__header">
-            <h2>Годовые итоги</h2>
-            <p>Сравнение текущего уровня и после повышения.</p>
-          </div>
-          <div class="compare__table" id="compare-table"></div>
-        </div>
-
-        <div class="card chart">
+        <div class="chart">
           <div class="chart__header">
             <h2>Доход по месяцам</h2>
-            <p>На руки: до и после повышения по мере роста годовой базы.</p>
           </div>
           <div class="chart__grid" id="chart-grid"></div>
+        </div>
+
+        <div class="compare">
+          <div class="compare__header">
+            <h2>Годовые итоги</h2>
+          </div>
+          <div class="compare__table" id="compare-table"></div>
         </div>
       </section>
 

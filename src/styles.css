@@ -727,6 +727,27 @@ body.is-dirty .calc-hint {
   height: 100%;
 }
 
+.summary--raise {
+  grid-template-columns: repeat(4, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.summary--raise .card {
+  padding: 14px;
+}
+
+.summary--raise .stat__label {
+  font-size: 0.74rem;
+}
+
+.summary--raise .stat__value {
+  font-size: 1rem;
+}
+
+.summary--raise .stat__meta {
+  font-size: 0.78rem;
+}
+
 .stat {
   display: grid;
   gap: 6px;
@@ -768,6 +789,12 @@ body.is-dirty .calc-hint {
 
 .chart,
 .breakdown {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-height: 100%;
+}
+
+.compare {
   display: grid;
   grid-template-rows: auto 1fr;
   min-height: 100%;
@@ -1143,8 +1170,17 @@ body.is-calculating .calc-progress::after {
   font-size: 1.02rem;
 }
 
+.salary-page .compare__header h2 {
+  margin: 0 0 6px;
+  font-size: 1.02rem;
+}
+
 .salary-page .breakdown__header p,
 .salary-page .chart__header p {
+  margin-bottom: 14px;
+}
+
+.salary-page .compare__header p {
   margin-bottom: 14px;
 }
 
@@ -1249,14 +1285,14 @@ body.is-calculating .calc-progress::after {
 
 .compare-row {
   display: grid;
-  grid-template-columns: minmax(140px, 1.2fr) repeat(3, minmax(120px, 1fr));
-  gap: 10px;
+  grid-template-columns: minmax(120px, 1.2fr) repeat(3, minmax(0, 1fr));
+  gap: 8px;
   align-items: center;
   padding: 10px 12px;
   border-radius: var(--radius-md);
   background: #fff;
   border: 1px solid var(--border);
-  font-weight: 600;
+  font-weight: 400;
   color: var(--ink);
 }
 
@@ -1264,18 +1300,71 @@ body.is-calculating .calc-progress::after {
   background: transparent;
   border: none;
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   padding: 0 12px;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.09em;
+  font-weight: 700;
 }
 
 .compare-row__label {
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .compare-row__delta {
   color: var(--ink);
+  font-weight: 400;
+}
+
+.compare-row > span,
+.month-table--compare .month-table__head > span,
+.month-table--compare .month-table__row > span {
+  min-width: 0;
+}
+
+.compare__table {
+  display: block;
+  gap: 0;
+  height: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: #fff;
+}
+
+.compare__table .compare-row {
+  border: 0;
+  border-top: 1px solid rgba(43, 37, 34, 0.08);
+  border-radius: 0;
+  background: transparent;
+  padding: 12px 14px;
+}
+
+.compare__table .compare-row--header {
+  border-top: 0;
+  border-bottom: 1px solid rgba(43, 37, 34, 0.08);
+  padding: 10px 14px;
+  background: var(--surface-soft);
+}
+
+.compare__table .compare-row > span:nth-child(3) {
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.compare__table .compare-row--header > span:nth-child(3) {
+  color: var(--muted);
+}
+
+.month-table--compare .month-table__head,
+.month-table--compare .month-table__row {
+  grid-template-columns: minmax(110px, 1.1fr) repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.month-table--compare .month-table__head {
+  font-size: 0.74rem;
+  letter-spacing: 0.07em;
 }
 
 .month-row--compare {
