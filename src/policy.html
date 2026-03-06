@@ -33,7 +33,31 @@
     <link rel="alternate" href="https://naruki.online/policy.html" hreflang="x-default" />
     <meta name="theme-color" content="#f6f0e9" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-    <link rel="stylesheet" href="styles.css?v=20260210" />
+    <script>
+      (function () {
+        const storageKey = "naruki-theme";
+        const darkMeta = "#101417";
+        const lightMeta = "#f6f0e9";
+        let theme = "light";
+        try {
+          const stored = localStorage.getItem(storageKey);
+          if (stored === "dark" || stored === "light") {
+            theme = stored;
+          } else if (
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+          ) {
+            theme = "dark";
+          }
+        } catch (_) {}
+        document.documentElement.setAttribute("data-theme", theme);
+        const themeMeta = document.querySelector('meta[name="theme-color"]');
+        if (themeMeta) {
+          themeMeta.setAttribute("content", theme === "dark" ? darkMeta : lightMeta);
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=20260306" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -135,6 +159,7 @@
       </div>
     </div>
 
+    <script src="theme.js?v=20260306"></script>
     <script src="analytics.js?v=20260210"></script>
   </body>
 </html>

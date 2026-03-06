@@ -33,7 +33,31 @@
     <link rel="alternate" href="https://naruki.online/" hreflang="x-default" />
     <meta name="theme-color" content="#f6f0e9" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-    <link rel="stylesheet" href="styles.css?v=20260210" />
+    <script>
+      (function () {
+        const storageKey = "naruki-theme";
+        const darkMeta = "#101417";
+        const lightMeta = "#f6f0e9";
+        let theme = "light";
+        try {
+          const stored = localStorage.getItem(storageKey);
+          if (stored === "dark" || stored === "light") {
+            theme = stored;
+          } else if (
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+          ) {
+            theme = "dark";
+          }
+        } catch (_) {}
+        document.documentElement.setAttribute("data-theme", theme);
+        const themeMeta = document.querySelector('meta[name="theme-color"]');
+        if (themeMeta) {
+          themeMeta.setAttribute("content", theme === "dark" ? darkMeta : lightMeta);
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css?v=20260306" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -140,17 +164,6 @@
         <a class="calc-switch__brand" href="index.html" aria-label="Naruki.online">
           <span>Naruki.online</span>
         </a>
-        <button
-          class="calc-switch__toggle"
-          type="button"
-          aria-expanded="false"
-          aria-controls="calc-switch-menu"
-        >
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M4 7h16M4 12h16M4 17h16" />
-          </svg>
-          <span>Калькуляторы</span>
-        </button>
         <div class="calc-switch__tabs" role="tablist" id="calc-switch-menu">
           <a
             class="calc-switch__tab"
@@ -163,6 +176,35 @@
           <a class="calc-switch__tab" href="raise.html" role="tab">
             Повышение зарплаты
           </a>
+        </div>
+        <div class="calc-switch__actions">
+          <button
+            class="ghost ghost--icon theme-toggle"
+            type="button"
+            data-theme-toggle
+            aria-label="Включить тёмную тему"
+            title="Включить тёмную тему"
+          >
+            <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+            </svg>
+            <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="4" />
+              <path d="M12 2v2.2M12 19.8V22M4.9 4.9l1.6 1.6M17.5 17.5l1.6 1.6M2 12h2.2M19.8 12H22M4.9 19.1l1.6-1.6M17.5 6.5l1.6-1.6" />
+            </svg>
+            <span class="visually-hidden">Переключить тему</span>
+          </button>
+          <button
+            class="calc-switch__toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="calc-switch-menu"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 7h16M4 12h16M4 17h16" />
+            </svg>
+            <span>Калькуляторы</span>
+          </button>
         </div>
       </nav>
       <section class="hero">
@@ -335,6 +377,7 @@
       </div>
     </div>
 
+    <script src="theme.js?v=20260306"></script>
     <script src="app.js?v=20260210"></script>
     <script src="analytics.js?v=20260210"></script>
     <script type="application/ld+json">
