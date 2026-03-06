@@ -91,6 +91,8 @@
   --grid-gap: 16px;
   --skeleton-base: #e9e7e5;
   --skeleton-shine: #f8f7f6;
+  --gold: #b79a62;
+  --gold-soft: rgba(183, 154, 98, 0.2);
 }
 
 * {
@@ -1061,6 +1063,43 @@ body.is-calculating .calc-progress::after {
 
 .text-right {
   text-align: right;
+}
+
+.salary-page .calc-switch__brand-icon {
+  stroke: var(--gold);
+}
+
+.salary-page .calc-switch__tab[aria-current="page"] {
+  color: var(--gold);
+}
+
+.salary-page .stat.highlight {
+  border-color: var(--gold-soft);
+  background: linear-gradient(
+    180deg,
+    rgba(183, 154, 98, 0.06) 0%,
+    rgba(183, 154, 98, 0.02) 100%
+  );
+}
+
+.salary-page .stat.highlight .stat__value {
+  color: var(--gold);
+}
+
+.salary-page .bracket__fill {
+  background: linear-gradient(90deg, var(--gold), #c8ad79);
+}
+
+.salary-page .month-table__head {
+  border-bottom-color: var(--gold-soft);
+}
+
+.salary-page .month-table__net {
+  color: var(--gold);
+}
+
+.salary-page .month-table__tax--peak {
+  color: var(--gold);
 }
 
 .compare__header h2 {
