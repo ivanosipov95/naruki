@@ -232,38 +232,28 @@
             <p class="hint">Ставки применяются к годовому доходу по прогрессивной шкале.</p>
           </form>
         </div>
-        <div class="hero__text">
-          <p class="eyebrow">Налоги 2026 · Годовой доход</p>
-          <h1>Зарплата на руки за год — легко и просто</h1>
-          <p class="lead">
-            Введите ежемесячную зарплату до налогов и месяц начала работы — мы
-            покажем итоговые суммы, распределение по ставкам и помесячный доход.
-          </p>
-          <p class="meta-note">Актуально на 2026 год.</p>
-        </div>
+        <section class="summary summary--hero" aria-live="polite">
+          <div class="card stat">
+            <p class="stat__label">Доход до налогов</p>
+            <p class="stat__value" id="total-gross">—</p>
+            <p class="stat__meta" id="months-count">—</p>
+          </div>
+          <div class="card stat">
+            <p class="stat__label">Налоги всего</p>
+            <p class="stat__value" id="total-tax">—</p>
+            <p class="stat__meta" id="effective-rate">—</p>
+          </div>
+          <div class="card stat highlight">
+            <p class="stat__label">Доход на руки</p>
+            <p class="stat__value" id="total-net">—</p>
+            <p class="stat__meta" id="avg-net">—</p>
+          </div>
+        </section>
       </section>
 
       <div class="calc-progress" aria-hidden="true"></div>
-      <section class="summary" aria-live="polite">
-        <div class="card stat">
-          <p class="stat__label">Доход до налогов</p>
-          <p class="stat__value" id="total-gross">—</p>
-          <p class="stat__meta" id="months-count">—</p>
-        </div>
-        <div class="card stat">
-          <p class="stat__label">Налоги всего</p>
-          <p class="stat__value" id="total-tax">—</p>
-          <p class="stat__meta" id="effective-rate">—</p>
-        </div>
-        <div class="card stat highlight">
-          <p class="stat__label">Доход на руки</p>
-          <p class="stat__value" id="total-net">—</p>
-          <p class="stat__meta" id="avg-net">—</p>
-        </div>
-      </section>
-
       <section class="details">
-        <div class="card breakdown">
+        <div class="breakdown">
           <div class="breakdown__header">
             <h2>Налоги по ставкам</h2>
             <p>Сколько дохода попало в каждую шкалу.</p>
@@ -271,7 +261,7 @@
           <div id="brackets" class="breakdown__list"></div>
         </div>
 
-        <div class="card chart">
+        <div class="chart">
           <div class="chart__header">
             <h2>Доход по месяцам</h2>
             <p>На руки с учетом прогрессии по мере накопления.</p>

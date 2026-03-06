@@ -711,6 +711,15 @@ body.is-dirty .calc-hint {
   gap: var(--grid-gap);
 }
 
+.summary--hero {
+  align-self: start;
+  margin: 2px 0 0;
+}
+
+.summary--hero .card {
+  padding: 22px;
+}
+
 .stat {
   display: grid;
   gap: 8px;
@@ -1102,6 +1111,54 @@ body.is-calculating .calc-progress::after {
   color: var(--gold);
 }
 
+.salary-page .details {
+  gap: 14px;
+}
+
+.salary-page .details > .card {
+  padding: 20px;
+  box-shadow: none;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.salary-page .breakdown__header h2,
+.salary-page .chart__header h2 {
+  font-size: 1.02rem;
+}
+
+.salary-page .breakdown__header p,
+.salary-page .chart__header p {
+  margin-bottom: 14px;
+}
+
+.salary-page .breakdown__list {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  gap: 0;
+  background: #fff;
+}
+
+.salary-page .bracket {
+  border: 0;
+  border-top: 1px solid rgba(43, 37, 34, 0.08);
+  border-radius: 0;
+  background: transparent;
+  padding: 12px 14px;
+}
+
+.salary-page .bracket:first-child {
+  border-top: 0;
+}
+
+.salary-page .bracket__row {
+  gap: 8px;
+}
+
+.salary-page .bracket__bar {
+  height: 5px;
+}
+
 .compare__header h2 {
   margin: 0 0 6px;
   font-size: 1.3rem;
@@ -1346,6 +1403,10 @@ body.is-calculating .calc-progress::after {
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   }
 
+  .summary--hero {
+    width: 100%;
+  }
+
   .compare-row {
     grid-template-columns: minmax(120px, 1.1fr) repeat(3, minmax(100px, 1fr));
   }
@@ -1397,6 +1458,10 @@ body.is-calculating .calc-progress::after {
 
   .summary {
     grid-template-columns: 1fr;
+  }
+
+  .summary--hero .card {
+    padding: 18px;
   }
 
   .month-row__values--pills {
