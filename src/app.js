@@ -350,11 +350,10 @@ function renderChart(months) {
     const label = monthNames[item.month - 1];
     const netValue = item.working ? formatter.format(item.net) : "—";
     const taxValue = item.working ? formatter.format(item.tax) : "—";
-    const peakTaxClass = item.tax > 0 && item.tax === maxTax ? " month-table__tax--peak" : "";
     row.innerHTML = `
       <span class="month-table__month">${label}</span>
       <span class="month-table__value month-table__net text-right">${netValue}</span>
-      <span class="month-table__value month-table__tax text-right${peakTaxClass}">${taxValue}</span>
+      <span class="month-table__value month-table__tax text-right">${taxValue}</span>
     `;
     table.appendChild(row);
   });

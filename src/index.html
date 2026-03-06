@@ -137,13 +137,8 @@
     </div>
     <main class="page">
       <nav class="calc-switch" aria-label="Калькуляторы">
-        <a class="calc-switch__brand" href="index.html" aria-label="Naruki">
-          <svg class="calc-switch__brand-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M16 12C16 12 14.5 9 12 9C9.5 9 5 13 5 13" />
-            <path d="M5 13L9 18L19 5" />
-            <path d="M5 13C5 13 7 16 9 16" />
-          </svg>
-          <span>Naruki</span>
+        <a class="calc-switch__brand" href="index.html" aria-label="Naruki.online">
+          <span>Naruki.online</span>
         </a>
         <button
           class="calc-switch__toggle"
@@ -232,41 +227,51 @@
             <p class="hint">Ставки применяются к годовому доходу по прогрессивной шкале.</p>
           </form>
         </div>
-        <section class="summary summary--hero" aria-live="polite">
-          <div class="card stat">
-            <p class="stat__label">Доход до налогов</p>
-            <p class="stat__value" id="total-gross">—</p>
-            <p class="stat__meta" id="months-count">—</p>
+        <div class="hero__content">
+          <div class="hero__text">
+            <p class="eyebrow">Зарплата 2026 · Налоги в расчетах</p>
+            <h1>Калькулятор зарплаты на руки</h1>
+            <p class="lead">
+              Введите зарплату и месяц начала работы, чтобы сразу увидеть итоговый доход
+              на руки с учетом прогрессивной шкалы НДФЛ.
+            </p>
+            <p class="meta-note">Все расчеты ориентировочные и актуальны на 2026 год.</p>
           </div>
-          <div class="card stat">
-            <p class="stat__label">Налоги всего</p>
-            <p class="stat__value" id="total-tax">—</p>
-            <p class="stat__meta" id="effective-rate">—</p>
-          </div>
-          <div class="card stat highlight">
-            <p class="stat__label">Доход на руки</p>
-            <p class="stat__value" id="total-net">—</p>
-            <p class="stat__meta" id="avg-net">—</p>
-          </div>
-        </section>
+          <section class="summary summary--hero" aria-live="polite">
+            <div class="card stat">
+              <p class="stat__label">Доход до налогов</p>
+              <p class="stat__value" id="total-gross">—</p>
+              <p class="stat__meta" id="months-count">—</p>
+            </div>
+            <div class="card stat">
+              <p class="stat__label">Налоги всего</p>
+              <p class="stat__value" id="total-tax">—</p>
+              <p class="stat__meta" id="effective-rate">—</p>
+            </div>
+            <div class="card stat highlight">
+              <p class="stat__label">Доход на руки</p>
+              <p class="stat__value" id="total-net">—</p>
+              <p class="stat__meta" id="avg-net">—</p>
+            </div>
+          </section>
+        </div>
       </section>
 
       <div class="calc-progress" aria-hidden="true"></div>
       <section class="details">
-        <div class="breakdown">
-          <div class="breakdown__header">
-            <h2>Налоги по ставкам</h2>
-            <p>Сколько дохода попало в каждую шкалу.</p>
-          </div>
-          <div id="brackets" class="breakdown__list"></div>
-        </div>
 
         <div class="chart">
           <div class="chart__header">
             <h2>Доход по месяцам</h2>
-            <p>На руки с учетом прогрессии по мере накопления.</p>
           </div>
           <div class="chart__grid" id="chart-grid"></div>
+        </div>
+
+        <div class="breakdown">
+          <div class="breakdown__header">
+            <h2>Налоги по ставкам</h2>
+          </div>
+          <div id="brackets" class="breakdown__list"></div>
         </div>
       </section>
 

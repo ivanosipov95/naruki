@@ -455,7 +455,13 @@ body.is-transitioning .footer {
   display: grid;
   grid-template-columns: 340px minmax(0, 1fr);
   gap: 32px;
-  align-items: start;
+  align-items: end;
+}
+
+.hero__content {
+  display: grid;
+  gap: 18px;
+  align-content: start;
 }
 
 .hero__text h1 {
@@ -707,22 +713,24 @@ body.is-dirty .calc-hint {
 
 .summary {
   display: grid;
-  grid-template-columns: repeat(3, minmax(220px, 1fr));
-  gap: var(--grid-gap);
+  grid-template-columns: repeat(3, minmax(200px, 1fr));
+  gap: 14px;
+  align-items: stretch;
 }
 
 .summary--hero {
-  align-self: start;
-  margin: 2px 0 0;
+  margin: 0;
 }
 
 .summary--hero .card {
-  padding: 22px;
+  padding: 18px;
+  height: 100%;
 }
 
 .stat {
   display: grid;
-  gap: 8px;
+  gap: 6px;
+  align-content: start;
 }
 
 .stat__label {
@@ -735,7 +743,7 @@ body.is-dirty .calc-hint {
 }
 
 .stat__value {
-  font-size: 1.25rem;
+  font-size: 1.18rem;
   font-weight: 600;
   margin: 0;
 }
@@ -743,7 +751,7 @@ body.is-dirty .calc-hint {
 .stat__meta {
   margin: 0;
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: 0.86rem;
 }
 
 .stat.highlight {
@@ -755,6 +763,14 @@ body.is-dirty .calc-hint {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: var(--grid-gap);
+  align-items: stretch;
+}
+
+.chart,
+.breakdown {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-height: 100%;
 }
 
 .faq {
@@ -972,6 +988,7 @@ body.is-calculating .calc-progress::after {
 .breakdown__list {
   display: grid;
   gap: 12px;
+  align-content: start;
 }
 
 .bracket {
@@ -1108,7 +1125,7 @@ body.is-calculating .calc-progress::after {
 }
 
 .salary-page .month-table__tax--peak {
-  color: var(--gold);
+  color: var(--muted);
 }
 
 .salary-page .details {
@@ -1137,6 +1154,7 @@ body.is-calculating .calc-progress::after {
   overflow: hidden;
   gap: 0;
   background: #fff;
+  height: 100%;
 }
 
 .salary-page .bracket {
@@ -1400,7 +1418,7 @@ body.is-calculating .calc-progress::after {
   }
 
   .summary {
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
 
   .summary--hero {
@@ -1461,7 +1479,7 @@ body.is-calculating .calc-progress::after {
   }
 
   .summary--hero .card {
-    padding: 18px;
+    padding: 16px;
   }
 
   .month-row__values--pills {
