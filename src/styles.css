@@ -1703,8 +1703,18 @@ body.is-calculating .calc-progress::after {
 
   .month-table__head,
   .month-table__row {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 6px;
+    grid-template-columns: minmax(88px, 1fr) auto auto;
+    gap: 10px;
+  }
+
+  .month-table--compare {
+    min-width: 430px;
+  }
+
+  .month-table--compare .month-table__head,
+  .month-table--compare .month-table__row {
+    grid-template-columns: minmax(88px, 1fr) repeat(3, minmax(96px, auto));
+    gap: 8px;
   }
 
   .month-table__head {
@@ -1713,6 +1723,7 @@ body.is-calculating .calc-progress::after {
 
   .month-table__row {
     padding: 12px;
+    align-items: baseline;
   }
 
   .month-table__month {
@@ -1720,7 +1731,13 @@ body.is-calculating .calc-progress::after {
   }
 
   .month-table__value {
-    text-align: left;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .chart__grid {
+    overflow-x: auto;
+    overflow-y: hidden;
   }
 
   .calc-switch {
