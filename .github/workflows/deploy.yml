@@ -2,11 +2,17 @@ name: Deploy
 
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version (e.g. v1.2.3)"
+        required: true
+        type: string
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
+      RELEASE_VERSION: ${{ github.event.inputs.version }}
       FTP_HOST: ${{ secrets.FTP_HOST }}
       FTP_USER: ${{ secrets.FTP_USER }}
       FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
@@ -15,14 +21,33 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Validate FTP secrets
+      - name: Validate inputs and FTP secrets
         run: |
+          if [ -z "$RELEASE_VERSION" ]; then
+            echo "version input is required"
+            exit 1
+          fi
           if [ -z "$FTP_HOST" ] || [ -z "$FTP_USER" ] || [ -z "$FTP_PASSWORD" ] || [ -z "$FTP_REMOTE_PATH" ]; then
             echo "FTP_HOST, FTP_USER, FTP_PASSWORD, FTP_REMOTE_PATH secrets are required"
             exit 1
           fi
 
-      - name: Deploy via FTP/FTPS
+      - name: Upload release to releases directory
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: ${{ secrets.FTP_PORT || 21 }}
+          protocol: ${{ secrets.FTP_PROTOCOL || 'ftp' }}
+          local-dir: src/
+          server-dir: ${{ secrets.FTP_REMOTE_PATH }}/releases/${{ github.event.inputs.version }}/
+          state-name: .ftp-deploy-sync-state-release.json
+          exclude: |
+            **/.git*
+            **/.github/**
+
+      - name: Promote release to root
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_HOST }}
@@ -32,6 +57,8 @@ jobs:
           protocol: ${{ secrets.FTP_PROTOCOL || 'ftp' }}
           local-dir: src/
           server-dir: ${{ secrets.FTP_REMOTE_PATH }}/
+          state-name: .ftp-deploy-sync-state-root.json
           exclude: |
+            **/releases/**
             **/.git*
             **/.github/**

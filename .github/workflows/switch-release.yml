@@ -13,36 +13,51 @@ jobs:
     runs-on: ubuntu-latest
     env:
       RELEASE_VERSION: ${{ github.event.inputs.version }}
-      SSH_HOST: ${{ secrets.SSH_HOST }}
-      SSH_USER: ${{ secrets.SSH_USER }}
-      SSH_PORT: ${{ secrets.SSH_PORT }}
-      DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+      FTP_HOST: ${{ secrets.FTP_HOST }}
+      FTP_USER: ${{ secrets.FTP_USER }}
+      FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+      FTP_REMOTE_PATH: ${{ secrets.FTP_REMOTE_PATH }}
+      FTP_PORT: ${{ secrets.FTP_PORT || 21 }}
+      FTP_PROTOCOL: ${{ secrets.FTP_PROTOCOL || 'ftp' }}
     steps:
-      - name: Validate inputs
+      - name: Validate inputs and FTP secrets
         run: |
           if [ -z "$RELEASE_VERSION" ]; then
             echo "version input is required"
             exit 1
           fi
-          if [ -z "$SSH_HOST" ] || [ -z "$SSH_USER" ] || [ -z "$DEPLOY_PATH" ]; then
-            echo "SSH_HOST, SSH_USER, DEPLOY_PATH secrets are required"
+          if [ -z "$FTP_HOST" ] || [ -z "$FTP_USER" ] || [ -z "$FTP_PASSWORD" ] || [ -z "$FTP_REMOTE_PATH" ]; then
+            echo "FTP_HOST, FTP_USER, FTP_PASSWORD, FTP_REMOTE_PATH secrets are required"
             exit 1
           fi
 
-      - name: Start ssh-agent
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Add server to known_hosts
+      - name: Install lftp
         run: |
-          mkdir -p ~/.ssh
-          PORT="${SSH_PORT:-22}"
-          ssh-keyscan -p "$PORT" -H "$SSH_HOST" >> ~/.ssh/known_hosts
+          if ! command -v lftp >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y lftp
+          fi
 
       - name: Switch to release
         run: |
-          PORT="${SSH_PORT:-22}"
-          RELEASE_DIR="$DEPLOY_PATH/releases/$RELEASE_VERSION"
-          ssh -p "$PORT" "$SSH_USER@$SSH_HOST" "if [ ! -d '$RELEASE_DIR' ]; then echo 'Release not found: $RELEASE_DIR'; exit 1; fi"
-          ssh -p "$PORT" "$SSH_USER@$SSH_HOST" "rsync -a --delete --exclude 'releases/' --exclude '.git' --exclude '.github' '$RELEASE_DIR/' '$DEPLOY_PATH/'"
+          set -euo pipefail
+          RELEASE_DIR="$FTP_REMOTE_PATH/releases/$RELEASE_VERSION"
+          ROOT_DIR="$FTP_REMOTE_PATH"
+          TMP_DIR="$RUNNER_TEMP/release-$RELEASE_VERSION"
+          mkdir -p "$TMP_DIR"
+
+          SSL_SETTINGS=""
+          if [ "$FTP_PROTOCOL" = "ftps" ]; then
+            SSL_SETTINGS="set ftp:ssl-force true; set ftp:ssl-protect-data true;"
+          fi
+
+          lftp -e "
+            set cmd:fail-exit true;
+            set net:max-retries 2;
+            $SSL_SETTINGS
+            open -p $FTP_PORT -u \"$FTP_USER\",\"$FTP_PASSWORD\" \"$FTP_HOST\";
+            cls \"$RELEASE_DIR\";
+            mirror --verbose \"$RELEASE_DIR\" \"$TMP_DIR\";
+            mirror -R --delete --verbose \"$TMP_DIR\" \"$ROOT_DIR\";
+            bye
+          "
