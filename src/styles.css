@@ -1610,8 +1610,16 @@ body.is-calculating .calc-progress::after {
     order: 2;
   }
 
+  .hero__content {
+    display: contents;
+  }
+
   .hero__text {
     order: 1;
+  }
+
+  .summary--hero {
+    order: 3;
   }
 
   .summary {
