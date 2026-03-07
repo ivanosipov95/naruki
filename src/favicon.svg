@@ -1,17 +1,23 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Калькулятор">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Naruki.online">
   <defs>
-    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
-      <stop offset="0" stop-color="#2f88ff"/>
-      <stop offset="1" stop-color="#f0b866"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#101823"/>
+      <stop offset="0.55" stop-color="#15253c"/>
+      <stop offset="1" stop-color="#0d141f"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#c89445"/>
+      <stop offset="1" stop-color="#f0c67a"/>
     </linearGradient>
   </defs>
-  <rect width="64" height="64" rx="16" fill="url(#g)"/>
-  <rect x="14" y="12" width="36" height="40" rx="8" fill="#ffffff" opacity="0.92"/>
-  <rect x="20" y="18" width="24" height="8" rx="4" fill="#2f88ff"/>
-  <circle cx="24" cy="34" r="3" fill="#121722"/>
-  <circle cx="32" cy="34" r="3" fill="#121722"/>
-  <circle cx="40" cy="34" r="3" fill="#121722"/>
-  <circle cx="24" cy="42" r="3" fill="#121722"/>
-  <circle cx="32" cy="42" r="3" fill="#121722"/>
-  <circle cx="40" cy="42" r="3" fill="#121722"/>
+
+  <rect width="64" height="64" rx="14" fill="url(#bg)"/>
+  <rect x="8" y="8" width="48" height="48" rx="12" fill="none" stroke="#7f8ea433" stroke-width="1.5"/>
+
+  <rect x="16" y="40" width="8" height="10" rx="2" fill="#dce3ee" opacity="0.86"/>
+  <rect x="28" y="34" width="8" height="16" rx="2" fill="#dce3ee" opacity="0.86"/>
+  <rect x="40" y="27" width="8" height="23" rx="2" fill="#dce3ee" opacity="0.86"/>
+
+  <path d="M15 30L26 24L34 27L48 16" fill="none" stroke="url(#accent)" stroke-width="3.3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M45 16H50V21" fill="none" stroke="url(#accent)" stroke-width="3.3" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
