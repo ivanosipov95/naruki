@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SRC_DIR = ROOT / "src"
 HTML_GLOB = "*.html"
 ASSET_RE = re.compile(
-    r'(?P<attr>(?:href|src))="(?P<url>[^"]+?\.(?:css|js|svg|woff2))(?:\?v=[^"]*)?"'
+    r'(?P<attr>(?:href|src))="(?P<url>[^"]+?\.(?:css|js|svg|woff2|png|ico|webmanifest))(?:\?v=[^"]*)?"'
 )
 
 
