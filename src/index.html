@@ -212,109 +212,100 @@
           </button>
         </div>
       </nav>
-      <section class="hero">
-        <div class="hero__panel">
-          <form id="calc-form" class="card">
-            <div class="field">
-              <label for="gross">Зарплата в месяц до налогов, ₽</label>
-              <input
-                id="gross"
-                name="gross"
-                type="text"
-                inputmode="numeric"
-                min="0"
-                step="1000"
-                placeholder="Например, 50 000"
-                required
-              />
-            </div>
-            <div class="field">
-              <label for="start">Месяц начала работы в этом году</label>
-              <select id="start" name="start" required>
-                <option value="1">Январь</option>
-                <option value="2">Февраль</option>
-                <option value="3">Март</option>
-                <option value="4">Апрель</option>
-                <option value="5">Май</option>
-                <option value="6">Июнь</option>
-                <option value="7">Июль</option>
-                <option value="8">Август</option>
-                <option value="9">Сентябрь</option>
-                <option value="10">Октябрь</option>
-                <option value="11">Ноябрь</option>
-                <option value="12">Декабрь</option>
-              </select>
-            </div>
-            <details class="bonus-panel" id="bonus-panel">
-              <summary class="bonus-panel__toggle">
-                <span>Добавить премии</span>
-                <svg class="bonus-panel__chevron" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M6 9l6 6 6-6" />
-                </svg>
-              </summary>
-              <div class="bonus-panel__body">
-                <div class="field">
-                  <label for="monthly-bonus">Ежемесячный бонус до налогов, ₽</label>
-                  <input
-                    id="monthly-bonus"
-                    name="monthly-bonus"
-                    type="text"
-                    inputmode="numeric"
-                    min="0"
-                    placeholder="0"
-                  />
-                </div>
-                <div class="bonus-payments" id="bonus-payments">
-                  <p class="field-label">Разовые выплаты</p>
-                  <div class="bonus-payments__list" id="bonus-payments-list"></div>
-                  <button class="ghost bonus-payments__add" type="button" id="bonus-add">
-                    + Добавить выплату
-                  </button>
-                </div>
-              </div>
-            </details>
-            <div class="actions">
-              <button class="primary" type="submit">Рассчитать</button>
-              <div class="share-wrap">
-                <button
-                  class="ghost ghost--icon"
-                  type="button"
-                  id="share-link"
-                  aria-label="Поделиться ссылкой"
-                  title="Поделиться ссылкой"
-                >
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <circle cx="18" cy="5" r="3" />
-                    <circle cx="6" cy="12" r="3" />
-                    <circle cx="18" cy="19" r="3" />
-                    <path d="M8.7 11l6.6-4.1M8.7 13l6.6 4.1" />
-                  </svg>
-                </button>
-                <span
-                  class="share-tooltip"
-                  id="share-status"
-                  role="status"
-                  aria-live="polite"
-                ></span>
-              </div>
-            </div>
-            <p class="calc-hint" id="calc-hint">Данные изменились — пересчитайте.</p>
-            <p class="hint">Ставки применяются к годовому доходу по прогрессивной шкале.</p>
-          </form>
+      <section class="hero hero--main">
+        <div class="hero__text">
+          <p class="eyebrow">Зарплата 2026 · Налоги в расчетах</p>
+          <h1>Калькулятор зарплаты на руки</h1>
+          <p class="lead">
+            Введите зарплату и месяц начала работы, чтобы сразу увидеть итоговый доход
+            на руки с учетом прогрессивной шкалы НДФЛ.
+          </p>
+          <p class="meta-note">Все расчеты ориентировочные и актуальны на 2026 год.</p>
         </div>
-        <div class="hero__content">
-          <div class="hero__text">
-            <p class="eyebrow">Зарплата 2026 · Налоги в расчетах</p>
-            <h1>Калькулятор зарплаты на руки</h1>
-            <p class="lead">
-              Введите зарплату и месяц начала работы, чтобы сразу увидеть итоговый доход
-              на руки с учетом прогрессивной шкалы НДФЛ.
-            </p>
-            <p class="lead">
-              Подходит, если нужно посчитать зарплату на руки или сравнить зп на руки
-              при разных окладах.
-            </p>
-            <p class="meta-note">Все расчеты ориентировочные и актуальны на 2026 год.</p>
+        <div class="hero__row">
+          <div class="hero__panel">
+            <form id="calc-form" class="card">
+              <div class="field">
+                <label for="gross">Зарплата в месяц до налогов, ₽</label>
+                <input
+                  id="gross"
+                  name="gross"
+                  type="text"
+                  inputmode="numeric"
+                  min="0"
+                  step="1000"
+                  placeholder="Например, 50 000"
+                  required
+                />
+              </div>
+              <div class="field">
+                <label for="start">Месяц начала работы в этом году</label>
+                <select id="start" name="start" required>
+                  <option value="1">Январь</option>
+                  <option value="2">Февраль</option>
+                  <option value="3">Март</option>
+                  <option value="4">Апрель</option>
+                  <option value="5">Май</option>
+                  <option value="6">Июнь</option>
+                  <option value="7">Июль</option>
+                  <option value="8">Август</option>
+                  <option value="9">Сентябрь</option>
+                  <option value="10">Октябрь</option>
+                  <option value="11">Ноябрь</option>
+                  <option value="12">Декабрь</option>
+                </select>
+              </div>
+              <div class="actions">
+                <button class="primary" type="submit">Рассчитать</button>
+                <div class="share-wrap">
+                  <button
+                    class="ghost ghost--icon"
+                    type="button"
+                    id="share-link"
+                    aria-label="Поделиться ссылкой"
+                    title="Поделиться ссылкой"
+                  >
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <circle cx="18" cy="5" r="3" />
+                      <circle cx="6" cy="12" r="3" />
+                      <circle cx="18" cy="19" r="3" />
+                      <path d="M8.7 11l6.6-4.1M8.7 13l6.6 4.1" />
+                    </svg>
+                  </button>
+                  <span
+                    class="share-tooltip"
+                    id="share-status"
+                    role="status"
+                    aria-live="polite"
+                  ></span>
+                </div>
+              </div>
+              <p class="calc-hint" id="calc-hint">Данные изменились — пересчитайте.</p>
+              <p class="hint">Ставки применяются к годовому доходу по прогрессивной шкале.</p>
+            </form>
+          </div>
+          <div class="card bonus-card" id="bonus-card">
+            <p class="bonus-card__title">Премии</p>
+            <div class="bonus-card__body">
+              <div class="field">
+                <label for="monthly-bonus">Ежемесячный бонус до налогов, ₽</label>
+                <input
+                  id="monthly-bonus"
+                  name="monthly-bonus"
+                  type="text"
+                  inputmode="numeric"
+                  min="0"
+                  placeholder="0"
+                />
+              </div>
+              <div class="bonus-payments" id="bonus-payments">
+                <p class="field-label">Разовые выплаты</p>
+                <div class="bonus-payments__list" id="bonus-payments-list"></div>
+                <button class="ghost bonus-payments__add" type="button" id="bonus-add">
+                  + Добавить выплату
+                </button>
+              </div>
+            </div>
           </div>
           <section class="summary summary--hero" aria-live="polite">
             <div class="card stat">

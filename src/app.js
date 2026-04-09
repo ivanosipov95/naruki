@@ -631,9 +631,6 @@ if (presetMb > 0 && monthlyBonusInput) {
 presetPayments.forEach(({ month, amount }) => {
   bonusPaymentsList?.appendChild(createPaymentRow(month, amount));
 });
-if (presetMb > 0 || presetPayments.length > 0) {
-  document.querySelector("#bonus-panel")?.setAttribute("open", "");
-}
 
 setDirtyState(false);
 

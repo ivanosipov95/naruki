@@ -201,7 +201,17 @@
           </button>
         </div>
       </nav>
-      <section class="hero">
+      <section class="hero hero--raise">
+        <div class="hero__text">
+          <p class="eyebrow">Повышение 2026 · Налоги в расчетах</p>
+          <h1>Калькулятор повышения зарплаты</h1>
+          <p class="lead">
+            Выберите формат повышения, проверьте эквивалент в процентах и рублях и
+            сразу увидьте, как изменится доход на руки с учётом прогрессии по НДФЛ.
+          </p>
+          <p class="meta-note">Все расчеты ориентировочные и актуальны на 2026 год.</p>
+        </div>
+        <div class="hero__row">
         <div class="hero__panel">
           <form id="raise-form" class="card">
             <div class="field">
@@ -305,21 +315,58 @@
             <p class="hint">Ставки применяются к годовому доходу по прогрессивной шкале НДФЛ.</p>
           </form>
         </div>
-        <div class="hero__content">
-          <div class="hero__text">
-            <p class="eyebrow">Повышение 2026 · Налоги в расчетах</p>
-            <h1>Калькулятор повышения зарплаты</h1>
-            <p class="lead">
-              Выберите формат повышения, проверьте эквивалент в процентах и рублях и
-              сразу увидьте, как изменится доход на руки с учетом прогрессии по НДФЛ.
-            </p>
-            <p class="lead">
-              Полезно, если нужно оценить повышение зарплаты и понять, сколько будет на
-              руки после изменений.
-            </p>
-            <p class="meta-note">Все расчеты ориентировочные и актуальны на 2026 год.</p>
+        <div class="card bonus-card" id="bonus-card">
+            <p class="bonus-card__title">Премии</p>
+            <div class="bonus-card__body">
+              <div class="field">
+                <label for="monthly-bonus">Ежемесячный бонус до налогов, ₽</label>
+                <input
+                  id="monthly-bonus"
+                  name="monthly-bonus"
+                  type="text"
+                  inputmode="numeric"
+                  min="0"
+                  placeholder="0"
+                />
+              </div>
+              <div class="bonus-payments" id="bonus-payments">
+                <p class="field-label">Разовые выплаты</p>
+                <div class="bonus-payments__list" id="bonus-payments-list"></div>
+                <button class="ghost bonus-payments__add" type="button" id="bonus-add">
+                  + Добавить выплату
+                </button>
+              </div>
+              <div class="field">
+                <label for="bonus-after-mode">После повышения</label>
+                <select id="bonus-after-mode" name="bonus-after-mode">
+                  <option value="same">Не изменятся</option>
+                  <option value="proportional">Пропорционально новому окладу</option>
+                  <option value="custom">Укажу сам</option>
+                </select>
+              </div>
+              <div class="bonus-after-panel" id="bonus-after-panel" hidden>
+                <div class="field">
+                  <label for="monthly-bonus-after">Ежемесячный бонус после повышения, ₽</label>
+                  <input
+                    id="monthly-bonus-after"
+                    name="monthly-bonus-after"
+                    type="text"
+                    inputmode="numeric"
+                    min="0"
+                    placeholder="0"
+                  />
+                </div>
+                <div class="bonus-payments" id="bonus-payments-after">
+                  <p class="field-label">Разовые выплаты после повышения</p>
+                  <div class="bonus-payments__list" id="bonus-payments-after-list"></div>
+                  <button class="ghost bonus-payments__add" type="button" id="bonus-after-add">
+                    + Добавить выплату
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
-          <section class="summary summary--hero summary--raise" aria-live="polite">
+          <section class="summary summary--raise" aria-live="polite">
             <div class="card stat">
               <p class="stat__label">Текущая зарплата</p>
               <p class="stat__value" id="summary-current-gross">—</p>
@@ -341,7 +388,7 @@
               <p class="stat__meta" id="summary-net-month">—</p>
             </div>
           </section>
-        </div>
+        </div><!-- hero__row -->
       </section>
 
       <div class="calc-progress" aria-hidden="true"></div>

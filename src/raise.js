@@ -6,6 +6,14 @@ const raiseStartInput = document.querySelector("#raise-start");
 const modeInputs = document.querySelectorAll('input[name="raise-mode"]');
 const modeFields = document.querySelectorAll("[data-mode-field]");
 const modeLabels = document.querySelectorAll(".segmented__item");
+const monthlyBonusInput      = document.querySelector("#monthly-bonus");
+const bonusPaymentsList      = document.querySelector("#bonus-payments-list");
+const bonusAddBtn            = document.querySelector("#bonus-add");
+const bonusAfterModeSelect   = document.querySelector("#bonus-after-mode");
+const bonusAfterPanel        = document.querySelector("#bonus-after-panel");
+const monthlyBonusAfterInput = document.querySelector("#monthly-bonus-after");
+const bonusPaymentsAfterList = document.querySelector("#bonus-payments-after-list");
+const bonusAfterAddBtn       = document.querySelector("#bonus-after-add");
 
 const summaryCurrentGrossEl = document.querySelector("#summary-current-gross");
 const summaryCurrentNetEl = document.querySelector("#summary-current-net");
@@ -241,6 +249,75 @@ function caretFromDigits(formattedValue, digitsCount) {
   return formattedValue.length;
 }
 
+function createPaymentRow(month = 1, amount = 0, listEl) {
+  const row = document.createElement("div");
+  row.className = "bonus-payment-row";
+  row.innerHTML = `
+    <select class="bonus-payment-row__month" aria-label="Месяц выплаты">
+      ${monthNames.map((name, i) => `<option value="${i + 1}"${i + 1 === month ? " selected" : ""}>${name}</option>`).join("")}
+    </select>
+    <input class="bonus-payment-row__amount" type="text" inputmode="numeric"
+           placeholder="0" value="${amount > 0 ? formatGrossInput(String(amount)) : ""}"
+           aria-label="Сумма выплаты" />
+    <button class="ghost ghost--icon bonus-payment-row__remove" type="button" aria-label="Удалить">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  `;
+  row.querySelector(".bonus-payment-row__remove").addEventListener("click", () => {
+    row.remove();
+    setDirtyState(true);
+  });
+  row.querySelector(".bonus-payment-row__amount").addEventListener("input", (e) => {
+    const raw = e.target.value;
+    const caret = e.target.selectionStart;
+    const digitsBefore = countDigitsBefore(raw, caret);
+    const formatted = formatGrossInput(raw);
+    e.target.value = formatted;
+    const nextCaret = caretFromDigits(formatted, digitsBefore);
+    e.target.setSelectionRange(nextCaret, nextCaret);
+    setDirtyState(true);
+  });
+  row.querySelector(".bonus-payment-row__month").addEventListener("change", () => setDirtyState(true));
+  return row;
+}
+
+function getOneTimePayments(listEl) {
+  const rows = listEl?.querySelectorAll(".bonus-payment-row") ?? [];
+  return Array.from(rows).map((row) => ({
+    month: Number(row.querySelector(".bonus-payment-row__month").value),
+    amount: clampNumber(parseGrossInput(row.querySelector(".bonus-payment-row__amount").value)),
+  })).filter((p) => p.amount > 0);
+}
+
+function getBonusForMonth(month, monthlyBonus, oneTimePayments) {
+  const oneTime = oneTimePayments
+    .filter((p) => p.month === month)
+    .reduce((s, p) => s + p.amount, 0);
+  return monthlyBonus + oneTime;
+}
+
+function getAfterBonuses({ monthlyBonus, oneTimePayments, bonusAfterMode, newMonthlyBonus, newOneTimePayments, currentGross, newGross }) {
+  if (bonusAfterMode === "proportional") {
+    const ratio = currentGross > 0 ? newGross / currentGross : 1;
+    return {
+      monthlyBonus: monthlyBonus * ratio,
+      oneTimePayments: oneTimePayments.map((p) => ({ month: p.month, amount: p.amount * ratio })),
+    };
+  }
+  if (bonusAfterMode === "custom") {
+    return { monthlyBonus: newMonthlyBonus, oneTimePayments: newOneTimePayments };
+  }
+  return { monthlyBonus, oneTimePayments };
+}
+
+function parsePaymentsParam(raw) {
+  if (!raw) return [];
+  return raw.split(",").map((s) => {
+    const [m, a] = s.split(":").map(Number);
+    return { month: m, amount: a };
+  }).filter((p) => p.month >= 1 && p.month <= 12 && p.amount > 0);
+}
+
 function calculateTaxForIncome(income) {
   let remaining = income;
   let previousLimit = 0;
@@ -265,26 +342,29 @@ function calculateTaxForIncome(income) {
   return { totalTax, breakdown };
 }
 
-function calculateMonthlyNet(gross) {
-  return calculateMonthlyNetSequence(Array(12).fill(gross));
+function calculateMonthlyNet(gross, monthlyBonus = 0, oneTimePayments = []) {
+  return calculateMonthlyNetSequence(Array(12).fill(gross), monthlyBonus, oneTimePayments);
 }
 
-function calculateMonthlyNetSequence(grosses) {
+function calculateMonthlyNetSequence(grosses, monthlyBonus = 0, oneTimePayments = []) {
   const months = [];
   let cumulativeIncome = 0;
   let cumulativeTax = 0;
 
   for (let month = 1; month <= 12; month += 1) {
     const gross = clampNumber(grosses[month - 1] ?? 0);
-    cumulativeIncome += gross;
+    const bonus = getBonusForMonth(month, monthlyBonus, oneTimePayments);
+    const totalEarned = gross + bonus;
+    cumulativeIncome += totalEarned;
     const { totalTax } = calculateTaxForIncome(cumulativeIncome);
     const monthTax = totalTax - cumulativeTax;
     cumulativeTax = totalTax;
     months.push({
       month,
       gross,
+      bonus,
       tax: monthTax,
-      net: gross - monthTax,
+      net: totalEarned - monthTax,
     });
   }
 
@@ -333,6 +413,11 @@ function getCurrentInputs() {
   }
 
   const newGross = clampNumber(currentGross + raiseAmount);
+  const monthlyBonus = clampNumber(parseGrossInput(monthlyBonusInput?.value ?? ""));
+  const oneTimePayments = getOneTimePayments(bonusPaymentsList);
+  const bonusAfterMode = bonusAfterModeSelect?.value ?? "same";
+  const newMonthlyBonus = clampNumber(parseGrossInput(monthlyBonusAfterInput?.value ?? ""));
+  const newOneTimePayments = getOneTimePayments(bonusPaymentsAfterList);
 
   return {
     currentGross,
@@ -341,6 +426,11 @@ function getCurrentInputs() {
     newGross,
     mode,
     startMonth,
+    monthlyBonus,
+    oneTimePayments,
+    bonusAfterMode,
+    newMonthlyBonus,
+    newOneTimePayments,
   };
 }
 
@@ -466,10 +556,10 @@ function renderChart(currentMonths, newMonths) {
 
 function calculateTotalsFromMonths(currentMonths, newMonths) {
   const sum = (items, key) => items.reduce((acc, item) => acc + item[key], 0);
-  const currentYearGross = sum(currentMonths, "gross");
+  const currentYearGross = sum(currentMonths, "gross") + sum(currentMonths, "bonus");
   const currentTax = sum(currentMonths, "tax");
   const currentNet = sum(currentMonths, "net");
-  const newYearGross = sum(newMonths, "gross");
+  const newYearGross = sum(newMonths, "gross") + sum(newMonths, "bonus");
   const newTax = sum(newMonths, "tax");
   const newNet = sum(newMonths, "net");
 
@@ -496,11 +586,20 @@ function calculateTotalsFromMonths(currentMonths, newMonths) {
 }
 
 function renderAll(inputs) {
-  const currentMonths = calculateMonthlyNet(inputs.currentGross);
+  const afterBonuses = getAfterBonuses(inputs);
+  const currentMonths = calculateMonthlyNet(
+    inputs.currentGross,
+    inputs.monthlyBonus,
+    inputs.oneTimePayments
+  );
   const grosses = Array.from({ length: 12 }, (_, index) =>
     index + 1 < inputs.startMonth ? inputs.currentGross : inputs.newGross
   );
-  const newMonths = calculateMonthlyNetSequence(grosses);
+  const newMonths = calculateMonthlyNetSequence(
+    grosses,
+    afterBonuses.monthlyBonus,
+    afterBonuses.oneTimePayments
+  );
   const totals = calculateTotalsFromMonths(currentMonths, newMonths);
 
   raiseAmountInput.value = formatGrossInput(String(Math.round(inputs.raiseAmount)));
@@ -526,6 +625,38 @@ function syncUrlParams(inputs) {
     params.set("value", String(inputs.raisePercent));
   } else {
     params.set("value", String(Math.round(inputs.raiseAmount)));
+  }
+
+  if (inputs.monthlyBonus > 0) {
+    params.set("mb", String(Math.round(inputs.monthlyBonus)));
+  } else {
+    params.delete("mb");
+  }
+  if (inputs.oneTimePayments && inputs.oneTimePayments.length > 0) {
+    params.set("p", inputs.oneTimePayments.map((p) => `${p.month}:${Math.round(p.amount)}`).join(","));
+  } else {
+    params.delete("p");
+  }
+  const hasBonus = inputs.monthlyBonus > 0 || (inputs.oneTimePayments && inputs.oneTimePayments.length > 0);
+  if (hasBonus && inputs.bonusAfterMode && inputs.bonusAfterMode !== "same") {
+    params.set("bam", inputs.bonusAfterMode === "proportional" ? "prop" : "custom");
+  } else {
+    params.delete("bam");
+  }
+  if (inputs.bonusAfterMode === "custom") {
+    if (inputs.newMonthlyBonus > 0) {
+      params.set("nmb", String(Math.round(inputs.newMonthlyBonus)));
+    } else {
+      params.delete("nmb");
+    }
+    if (inputs.newOneTimePayments && inputs.newOneTimePayments.length > 0) {
+      params.set("np", inputs.newOneTimePayments.map((p) => `${p.month}:${Math.round(p.amount)}`).join(","));
+    } else {
+      params.delete("np");
+    }
+  } else {
+    params.delete("nmb");
+    params.delete("np");
   }
 
   const query = params.toString();
@@ -666,6 +797,12 @@ function readUrlParams() {
   const mode = params.get("mode");
   const value = params.get("value");
   const startMonth = Number(params.get("start"));
+  const mb = Number(params.get("mb") || 0);
+  const oneTimePayments = parsePaymentsParam(params.get("p") || "");
+  const bamRaw = params.get("bam");
+  const bonusAfterMode = bamRaw === "prop" ? "proportional" : bamRaw === "custom" ? "custom" : "same";
+  const newMonthlyBonus = Number(params.get("nmb") || 0);
+  const newOneTimePayments = parsePaymentsParam(params.get("np") || "");
 
   const hasGross = Number.isFinite(currentGross) && currentGross > 0;
   const hasMode = mode === "percent" || mode === "amount";
@@ -676,14 +813,67 @@ function readUrlParams() {
     mode: hasMode ? mode : "percent",
     value,
     startMonth: hasStart ? startMonth : null,
+    monthlyBonus: Number.isFinite(mb) && mb > 0 ? mb : 0,
+    oneTimePayments,
+    bonusAfterMode,
+    newMonthlyBonus: Number.isFinite(newMonthlyBonus) && newMonthlyBonus > 0 ? newMonthlyBonus : 0,
+    newOneTimePayments,
   };
 }
+
+if (monthlyBonusInput) {
+  monthlyBonusInput.addEventListener("input", () => {
+    const raw = monthlyBonusInput.value;
+    const caret = monthlyBonusInput.selectionStart;
+    const digitsBefore = countDigitsBefore(raw, caret);
+    const formatted = formatGrossInput(raw);
+    monthlyBonusInput.value = formatted;
+    const nextCaret = caretFromDigits(formatted, digitsBefore);
+    monthlyBonusInput.setSelectionRange(nextCaret, nextCaret);
+    setDirtyState(true);
+  });
+}
+
+if (monthlyBonusAfterInput) {
+  monthlyBonusAfterInput.addEventListener("input", () => {
+    const raw = monthlyBonusAfterInput.value;
+    const caret = monthlyBonusAfterInput.selectionStart;
+    const digitsBefore = countDigitsBefore(raw, caret);
+    const formatted = formatGrossInput(raw);
+    monthlyBonusAfterInput.value = formatted;
+    const nextCaret = caretFromDigits(formatted, digitsBefore);
+    monthlyBonusAfterInput.setSelectionRange(nextCaret, nextCaret);
+    setDirtyState(true);
+  });
+}
+
+bonusAddBtn?.addEventListener("click", () => {
+  bonusPaymentsList.appendChild(createPaymentRow(1, 0, bonusPaymentsList));
+  setDirtyState(true);
+});
+
+bonusAfterAddBtn?.addEventListener("click", () => {
+  bonusPaymentsAfterList.appendChild(createPaymentRow(1, 0, bonusPaymentsAfterList));
+  setDirtyState(true);
+});
+
+bonusAfterModeSelect?.addEventListener("change", () => {
+  if (bonusAfterPanel) {
+    bonusAfterPanel.hidden = bonusAfterModeSelect.value !== "custom";
+  }
+  setDirtyState(true);
+});
 
 const {
   currentGross: presetGross,
   mode: presetMode,
   value: presetValue,
   startMonth: presetStartMonth,
+  monthlyBonus: presetMb,
+  oneTimePayments: presetPayments,
+  bonusAfterMode: presetBam,
+  newMonthlyBonus: presetNmb,
+  newOneTimePayments: presetNewPayments,
 } = readUrlParams();
 
 if (presetGross !== null) {
@@ -702,6 +892,24 @@ if (presetValue) {
     raisePercentInput.value = formatPercentInput(parsePercentInput(presetValue));
   }
 }
+
+if (presetMb > 0 && monthlyBonusInput) {
+  monthlyBonusInput.value = formatGrossInput(String(presetMb));
+}
+presetPayments.forEach(({ month, amount }) => {
+  bonusPaymentsList?.appendChild(createPaymentRow(month, amount, bonusPaymentsList));
+});
+
+if (presetBam && presetBam !== "same" && bonusAfterModeSelect) {
+  bonusAfterModeSelect.value = presetBam;
+  if (bonusAfterPanel) bonusAfterPanel.hidden = presetBam !== "custom";
+}
+if (presetNmb > 0 && monthlyBonusAfterInput) {
+  monthlyBonusAfterInput.value = formatGrossInput(String(presetNmb));
+}
+presetNewPayments.forEach(({ month, amount }) => {
+  bonusPaymentsAfterList?.appendChild(createPaymentRow(month, amount, bonusPaymentsAfterList));
+});
 
 setDirtyState(false);
 if (presetGross !== null && presetValue) {
