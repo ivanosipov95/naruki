@@ -1,6 +1,9 @@
 const form = document.querySelector("#calc-form");
 const grossInput = document.querySelector("#gross");
 const startInput = document.querySelector("#start");
+const monthlyBonusInput = document.querySelector("#monthly-bonus");
+const bonusPaymentsList = document.querySelector("#bonus-payments-list");
+const bonusAddBtn = document.querySelector("#bonus-add");
 
 const totalGrossEl = document.querySelector("#total-gross");
 const totalTaxEl = document.querySelector("#total-tax");
@@ -125,6 +128,46 @@ const monthNames = [
   "Декабрь",
 ];
 
+function createPaymentRow(month = 1, amount = 0) {
+  const row = document.createElement("div");
+  row.className = "bonus-payment-row";
+  row.innerHTML = `
+    <select class="bonus-payment-row__month" aria-label="Месяц выплаты">
+      ${monthNames.map((name, i) => `<option value="${i + 1}"${i + 1 === month ? " selected" : ""}>${name}</option>`).join("")}
+    </select>
+    <input class="bonus-payment-row__amount" type="text" inputmode="numeric"
+           placeholder="0" value="${amount > 0 ? formatGrossInput(String(amount)) : ""}"
+           aria-label="Сумма выплаты" />
+    <button class="ghost ghost--icon bonus-payment-row__remove" type="button" aria-label="Удалить">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  `;
+  row.querySelector(".bonus-payment-row__remove").addEventListener("click", () => {
+    row.remove();
+    setDirtyState(true);
+  });
+  row.querySelector(".bonus-payment-row__amount").addEventListener("input", (e) => {
+    const raw = e.target.value;
+    const caret = e.target.selectionStart;
+    const digitsBefore = countDigitsBefore(raw, caret);
+    const formatted = formatGrossInput(raw);
+    e.target.value = formatted;
+    const nextCaret = caretFromDigits(formatted, digitsBefore);
+    e.target.setSelectionRange(nextCaret, nextCaret);
+    setDirtyState(true);
+  });
+  row.querySelector(".bonus-payment-row__month").addEventListener("change", () => setDirtyState(true));
+  return row;
+}
+
+function getOneTimePayments() {
+  const rows = bonusPaymentsList?.querySelectorAll(".bonus-payment-row") ?? [];
+  return Array.from(rows).map((row) => ({
+    month: Number(row.querySelector(".bonus-payment-row__month").value),
+    amount: clampNumber(parseGrossInput(row.querySelector(".bonus-payment-row__amount").value)),
+  })).filter((p) => p.amount > 0);
+}
+
 const brackets = [
   {
     label: "До 2 400 000",
@@ -227,6 +270,14 @@ function caretFromDigits(formattedValue, digitsCount) {
   return formattedValue.length;
 }
 
+function getBonusForMonth(month, startMonth, monthlyBonus, oneTimePayments) {
+  if (month < startMonth) return 0;
+  const oneTime = oneTimePayments
+    .filter((p) => p.month === month)
+    .reduce((s, p) => s + p.amount, 0);
+  return monthlyBonus + oneTime;
+}
+
 function calculateTaxForIncome(income) {
   let remaining = income;
   let previousLimit = 0;
@@ -251,7 +302,7 @@ function calculateTaxForIncome(income) {
   return { totalTax, breakdown };
 }
 
-function calculateMonthlyNet(gross, startMonth) {
+function calculateMonthlyNet(gross, startMonth, monthlyBonus, oneTimePayments) {
   const months = [];
   let cumulativeIncome = 0;
   let cumulativeTax = 0;
@@ -262,6 +313,7 @@ function calculateMonthlyNet(gross, startMonth) {
       months.push({
         month,
         gross: 0,
+        bonus: 0,
         tax: 0,
         net: 0,
         working,
@@ -269,15 +321,18 @@ function calculateMonthlyNet(gross, startMonth) {
       continue;
     }
 
-    cumulativeIncome += gross;
+    const bonusThisMonth = getBonusForMonth(month, startMonth, monthlyBonus, oneTimePayments);
+    const totalEarned = gross + bonusThisMonth;
+    cumulativeIncome += totalEarned;
     const { totalTax } = calculateTaxForIncome(cumulativeIncome);
     const monthTax = totalTax - cumulativeTax;
     cumulativeTax = totalTax;
     months.push({
       month,
       gross,
+      bonus: bonusThisMonth,
       tax: monthTax,
-      net: gross - monthTax,
+      net: totalEarned - monthTax,
       working,
     });
   }
@@ -332,15 +387,16 @@ function renderBrackets(breakdown, totalGross) {
 
 function renderChart(months) {
   chartGridEl.innerHTML = "";
-  const maxTax = months.reduce((max, month) => Math.max(max, month.tax), 0);
+  const hasBonus = months.some((m) => m.bonus > 0);
 
   const table = document.createElement("div");
-  table.className = "month-table";
+  table.className = hasBonus ? "month-table month-table--bonus" : "month-table";
   table.innerHTML = `
     <div class="month-table__head">
       <span>Месяц</span>
       <span class="text-right">На руки</span>
       <span class="text-right">Налог</span>
+      ${hasBonus ? `<span class="text-right">Премия</span>` : ""}
     </div>
   `;
 
@@ -350,10 +406,14 @@ function renderChart(months) {
     const label = monthNames[item.month - 1];
     const netValue = item.working ? formatter.format(item.net) : "—";
     const taxValue = item.working ? formatter.format(item.tax) : "—";
+    const bonusCell = hasBonus
+      ? `<span class="month-table__value month-table__bonus text-right">${item.working && item.bonus > 0 ? formatter.format(item.bonus) : "—"}</span>`
+      : "";
     row.innerHTML = `
       <span class="month-table__month">${label}</span>
       <span class="month-table__value month-table__net text-right">${netValue}</span>
       <span class="month-table__value month-table__tax text-right">${taxValue}</span>
+      ${bonusCell}
     `;
     table.appendChild(row);
   });
@@ -372,15 +432,18 @@ function declineMonth(count) {
 function getCurrentInputs() {
   const gross = clampNumber(parseGrossInput(grossInput.value));
   const startMonth = Number(startInput.value);
-  return { gross, startMonth };
+  const monthlyBonus = clampNumber(parseGrossInput(monthlyBonusInput?.value ?? ""));
+  const oneTimePayments = getOneTimePayments();
+  return { gross, startMonth, monthlyBonus, oneTimePayments };
 }
 
-function calculateAll(gross, startMonth) {
-  const monthsCount = Math.max(0, 12 - startMonth + 1);
-  const totalGross = gross * monthsCount;
-  const { totalTax, breakdown } = calculateTaxForIncome(totalGross);
+function calculateAll(gross, startMonth, monthlyBonus, oneTimePayments) {
+  const months = calculateMonthlyNet(gross, startMonth, monthlyBonus, oneTimePayments);
+  const totalGross = months.reduce((s, m) => s + m.gross + m.bonus, 0);
+  const totalTax = months.reduce((s, m) => s + m.tax, 0);
   const totalNet = totalGross - totalTax;
-  const months = calculateMonthlyNet(gross, startMonth);
+  const monthsCount = months.filter((m) => m.working).length;
+  const { breakdown } = calculateTaxForIncome(totalGross);
   return { totalGross, totalTax, totalNet, monthsCount, breakdown, months };
 }
 
@@ -389,7 +452,7 @@ function handleSubmit(event) {
   if (isCalculating) return;
   const shouldScroll = event?.isTrusted;
   setCalculatingState(true);
-  const { gross, startMonth } = getCurrentInputs();
+  const { gross, startMonth, monthlyBonus, oneTimePayments } = getCurrentInputs();
   if (shouldScroll && gross <= 0) {
     grossInput.setCustomValidity("Введите значение больше 0.");
     grossInput.reportValidity();
@@ -397,13 +460,13 @@ function handleSubmit(event) {
     return;
   }
   grossInput.setCustomValidity("");
-  const results = calculateAll(gross, startMonth);
+  const results = calculateAll(gross, startMonth, monthlyBonus, oneTimePayments);
 
   renderSummary(results);
   renderBrackets(results.breakdown, results.totalGross);
   renderChart(results.months);
 
-  syncUrlParams({ gross, startMonth });
+  syncUrlParams({ gross, startMonth, monthlyBonus, oneTimePayments });
   setDirtyState(false);
   if (shouldScroll) {
     trackGoal("calc_submit", { calculator: "salary" });
@@ -451,13 +514,13 @@ function setShareStatus(message) {
 
 async function copyShareLink() {
   trackGoal("share_click", { calculator: "salary" });
-  const { gross, startMonth } = getCurrentInputs();
-  const results = calculateAll(gross, startMonth);
+  const { gross, startMonth, monthlyBonus, oneTimePayments } = getCurrentInputs();
+  const results = calculateAll(gross, startMonth, monthlyBonus, oneTimePayments);
 
   renderSummary(results);
   renderBrackets(results.breakdown, results.totalGross);
   renderChart(results.months);
-  syncUrlParams({ gross, startMonth });
+  syncUrlParams({ gross, startMonth, monthlyBonus, oneTimePayments });
   setDirtyState(false);
 
   const url = window.location.href;
@@ -483,6 +546,14 @@ function readUrlParams() {
   const params = new URLSearchParams(window.location.search);
   const gross = Number(params.get("gross"));
   const startMonth = Number(params.get("start"));
+  const mb = Number(params.get("mb") || 0);
+  const pRaw = params.get("p") || "";
+  const oneTimePayments = pRaw
+    ? pRaw.split(",").map((s) => {
+        const [m, a] = s.split(":").map(Number);
+        return { month: m, amount: a };
+      }).filter((p) => p.month >= 1 && p.month <= 12 && p.amount > 0)
+    : [];
 
   const hasGross = Number.isFinite(gross) && gross > 0;
   const hasStart = Number.isFinite(startMonth) && startMonth >= 1 && startMonth <= 12;
@@ -490,10 +561,12 @@ function readUrlParams() {
   return {
     gross: hasGross ? gross : null,
     startMonth: hasStart ? startMonth : null,
+    monthlyBonus: Number.isFinite(mb) && mb > 0 ? mb : 0,
+    oneTimePayments,
   };
 }
 
-function syncUrlParams({ gross, startMonth }) {
+function syncUrlParams({ gross, startMonth, monthlyBonus, oneTimePayments }) {
   const params = new URLSearchParams(window.location.search);
   if (gross > 0) {
     params.set("gross", String(Math.round(gross)));
@@ -505,19 +578,63 @@ function syncUrlParams({ gross, startMonth }) {
   } else {
     params.delete("start");
   }
+  if (monthlyBonus > 0) {
+    params.set("mb", String(Math.round(monthlyBonus)));
+  } else {
+    params.delete("mb");
+  }
+  if (oneTimePayments && oneTimePayments.length > 0) {
+    params.set("p", oneTimePayments.map((p) => `${p.month}:${Math.round(p.amount)}`).join(","));
+  } else {
+    params.delete("p");
+  }
 
   const query = params.toString();
   const nextUrl = `${window.location.pathname}${query ? `?${query}` : ""}`;
   window.history.replaceState(null, "", nextUrl);
 }
 
-const { gross: presetGross, startMonth: presetStart } = readUrlParams();
+if (monthlyBonusInput) {
+  monthlyBonusInput.addEventListener("input", () => {
+    const raw = monthlyBonusInput.value;
+    const caret = monthlyBonusInput.selectionStart;
+    const digitsBefore = countDigitsBefore(raw, caret);
+    const formatted = formatGrossInput(raw);
+    monthlyBonusInput.value = formatted;
+    const nextCaret = caretFromDigits(formatted, digitsBefore);
+    monthlyBonusInput.setSelectionRange(nextCaret, nextCaret);
+    setDirtyState(true);
+  });
+}
+
+bonusAddBtn?.addEventListener("click", () => {
+  bonusPaymentsList.appendChild(createPaymentRow());
+  setDirtyState(true);
+});
+
+const {
+  gross: presetGross,
+  startMonth: presetStart,
+  monthlyBonus: presetMb,
+  oneTimePayments: presetPayments,
+} = readUrlParams();
 
 if (presetGross !== null) {
   grossInput.value = formatGrossInput(String(presetGross));
 }
 
 startInput.value = String(presetStart ?? 1);
+
+if (presetMb > 0 && monthlyBonusInput) {
+  monthlyBonusInput.value = formatGrossInput(String(presetMb));
+}
+presetPayments.forEach(({ month, amount }) => {
+  bonusPaymentsList?.appendChild(createPaymentRow(month, amount));
+});
+if (presetMb > 0 || presetPayments.length > 0) {
+  document.querySelector("#bonus-panel")?.setAttribute("open", "");
+}
+
 setDirtyState(false);
 
 if (presetGross !== null) {

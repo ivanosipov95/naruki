@@ -103,6 +103,7 @@
             <div class="sk sk-h-44 sk-w-100"></div>
             <div class="sk sk-h-16 sk-w-60"></div>
             <div class="sk sk-h-44 sk-w-100"></div>
+            <div class="sk sk-h-44 sk-w-100"></div>
             <div class="skeleton__row">
               <div class="sk sk-h-44 sk-w-45"></div>
               <div class="sk sk-h-44 sk-w-20 sk-round"></div>
@@ -244,6 +245,34 @@
                 <option value="12">Декабрь</option>
               </select>
             </div>
+            <details class="bonus-panel" id="bonus-panel">
+              <summary class="bonus-panel__toggle">
+                <span>Добавить премии</span>
+                <svg class="bonus-panel__chevron" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+              </summary>
+              <div class="bonus-panel__body">
+                <div class="field">
+                  <label for="monthly-bonus">Ежемесячный бонус до налогов, ₽</label>
+                  <input
+                    id="monthly-bonus"
+                    name="monthly-bonus"
+                    type="text"
+                    inputmode="numeric"
+                    min="0"
+                    placeholder="0"
+                  />
+                </div>
+                <div class="bonus-payments" id="bonus-payments">
+                  <p class="field-label">Разовые выплаты</p>
+                  <div class="bonus-payments__list" id="bonus-payments-list"></div>
+                  <button class="ghost bonus-payments__add" type="button" id="bonus-add">
+                    + Добавить выплату
+                  </button>
+                </div>
+              </div>
+            </details>
             <div class="actions">
               <button class="primary" type="submit">Рассчитать</button>
               <div class="share-wrap">
