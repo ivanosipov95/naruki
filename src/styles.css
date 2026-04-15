@@ -175,7 +175,9 @@ body {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.35s ease, visibility 0.35s ease;
+  transition:
+    opacity 0.35s ease,
+    visibility 0.35s ease;
 }
 
 body.is-loading .skeleton {
@@ -454,7 +456,10 @@ body.is-transitioning .footer {
   font-weight: 500;
   padding: 8px 16px;
   border-radius: var(--radius-sm);
-  transition: color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .calc-switch__tab:hover {
@@ -561,9 +566,25 @@ html[data-theme="dark"] .theme-toggle__icon--sun {
 
 .hero {
   display: grid;
-  grid-template-columns: 340px minmax(0, 1fr);
-  gap: 32px;
-  align-items: end;
+  grid-template-columns: 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.hero--main .hero__row {
+  display: grid;
+  grid-template-columns: 340px 280px minmax(0, 1fr);
+  gap: 24px;
+  align-items: stretch;
+}
+
+.hero--main .hero__panel > .card {
+  height: 100%;
+}
+
+.hero--main .summary--hero {
+  grid-template-columns: 1fr;
+  grid-auto-rows: 1fr;
 }
 
 .hero__content {
@@ -660,7 +681,9 @@ html[data-theme="dark"] .theme-toggle__icon--sun {
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
 }
 
 .share-tooltip::after {
@@ -688,7 +711,9 @@ html[data-theme="dark"] .theme-toggle__icon--sun {
   border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: 0.9rem;
-  transition: background 0.2s ease, border-color 0.2s ease;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .ghost:hover {
@@ -836,8 +861,9 @@ body.is-dirty .calc-hint {
 }
 
 .summary--raise {
-  grid-template-columns: repeat(4, minmax(150px, 1fr));
+  grid-template-columns: 1fr;
   gap: 10px;
+  grid-auto-rows: 1fr;
 }
 
 .summary--raise .card {
@@ -1068,7 +1094,10 @@ body.is-calculating .calc-progress::after {
   font-weight: 500;
   cursor: pointer;
   color: var(--muted);
-  transition: color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .segmented__item input {
@@ -1179,7 +1208,10 @@ body.is-calculating .calc-progress::after {
 .month-table__head,
 .month-table__row {
   display: grid;
-  grid-template-columns: minmax(120px, 1fr) minmax(120px, auto) minmax(120px, auto);
+  grid-template-columns: minmax(120px, 1fr) minmax(120px, auto) minmax(
+      120px,
+      auto
+    );
   gap: 10px;
   align-items: center;
   padding: 12px 14px;
@@ -1224,6 +1256,180 @@ body.is-calculating .calc-progress::after {
 
 .text-right {
   text-align: right;
+}
+
+/* Bonus panel */
+
+.bonus-panel {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.bonus-panel__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  cursor: pointer;
+  list-style: none;
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: var(--muted);
+  user-select: none;
+  transition: color 0.15s ease;
+  gap: 8px;
+}
+
+.bonus-panel__toggle::-webkit-details-marker {
+  display: none;
+}
+
+.bonus-panel__toggle:hover {
+  color: var(--ink);
+}
+
+.bonus-panel[open] .bonus-panel__toggle {
+  color: var(--ink);
+  border-bottom: 1px solid var(--border);
+}
+
+.bonus-panel__chevron {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.bonus-panel[open] .bonus-panel__chevron {
+  transform: rotate(180deg);
+}
+
+.bonus-panel__body {
+  display: grid;
+  gap: 16px;
+  padding: 16px 14px 14px;
+}
+
+.field-label {
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+.bonus-payments {
+  display: grid;
+  gap: 8px;
+}
+
+.bonus-payments__list {
+  display: grid;
+  gap: 8px;
+}
+
+.bonus-payments__add {
+  font-size: 0.875rem;
+  justify-self: start;
+}
+
+.bonus-payment-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.bonus-payment-row select,
+.bonus-payment-row input {
+  min-width: 0;
+}
+
+.bonus-payment-row__remove {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+}
+
+.bonus-after-panel {
+  display: grid;
+  gap: 16px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.hero--raise {
+  grid-template-columns: 1fr;
+  align-items: start;
+  gap: 28px;
+}
+
+.hero--raise .hero__row {
+  display: grid;
+  grid-template-columns: 340px 280px minmax(0, 1fr);
+  gap: 24px;
+  align-items: stretch;
+}
+
+.hero--raise .hero__panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: flex-start;
+}
+
+.hero--raise .hero__panel > .card {
+  flex: 1;
+}
+
+.bonus-card {
+  padding: 20px 24px 24px;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.bonus-card input,
+.bonus-card select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.bonus-card .field {
+  min-width: 0;
+}
+
+.bonus-card__title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--ink);
+  margin: 0 0 16px;
+}
+
+.bonus-card__body {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+/* Month table with bonus column */
+
+.month-table--bonus .month-table__head,
+.month-table--bonus .month-table__row {
+  grid-template-columns: minmax(100px, 1fr) minmax(110px, auto) minmax(
+      100px,
+      auto
+    ) minmax(100px, auto);
+}
+
+.month-table__bonus {
+  font-weight: 500;
+  color: var(--gold);
 }
 
 .salary-page .calc-switch__brand-icon {
@@ -1566,7 +1772,6 @@ body.is-calculating .calc-progress::after {
   color: var(--ink);
 }
 
-
 .footer {
   text-align: center;
   padding: 0 24px 40px;
@@ -1607,7 +1812,24 @@ body.is-calculating .calc-progress::after {
 
   .hero__panel {
     justify-content: center;
+    order: 1;
+  }
+
+  .hero__row,
+  .hero--main .hero__row,
+  .hero--raise .hero__row {
+    grid-template-columns: 1fr;
+  }
+
+  .bonus-card {
     order: 2;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .summary--hero,
+  .summary--raise {
+    order: 3;
   }
 
   .hero__content {
@@ -1615,11 +1837,11 @@ body.is-calculating .calc-progress::after {
   }
 
   .hero__text {
-    order: 1;
+    order: -1;
   }
 
-  .summary--hero {
-    order: 3;
+  .hero__row {
+    order: 1;
   }
 
   .summary {
@@ -1707,6 +1929,12 @@ body.is-calculating .calc-progress::after {
     gap: 10px;
   }
 
+  .month-table--bonus .month-table__head,
+  .month-table--bonus .month-table__row {
+    grid-template-columns: minmax(88px, 1fr) auto auto auto;
+    gap: 8px;
+  }
+
   .month-table--compare {
     min-width: 430px;
   }
@@ -1762,6 +1990,7 @@ body.is-calculating .calc-progress::after {
     top: calc(100% + 8px);
     right: 0;
     left: auto;
+    z-index: 10;
     min-width: 220px;
     flex-direction: column;
     align-items: stretch;
@@ -1773,7 +2002,9 @@ body.is-calculating .calc-progress::after {
     opacity: 0;
     transform: translateY(-6px);
     pointer-events: none;
-    transition: opacity 0.2s ease, transform 0.2s ease;
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease;
   }
 
   .calc-switch__tab {

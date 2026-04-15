@@ -29,14 +29,46 @@
     />
     <meta name="twitter:image" content="https://naruki.online/og-image.svg" />
     <link rel="canonical" href="https://naruki.online/policy.html" />
-    <link rel="alternate" href="https://naruki.online/policy.html" hreflang="ru" />
-    <link rel="alternate" href="https://naruki.online/policy.html" hreflang="x-default" />
+    <link
+      rel="alternate"
+      href="https://naruki.online/policy.html"
+      hreflang="ru"
+    />
+    <link
+      rel="alternate"
+      href="https://naruki.online/policy.html"
+      hreflang="x-default"
+    />
     <meta name="theme-color" content="#f6f0e9" />
-    <link rel="icon" type="image/svg+xml" sizes="any" href="favicon.svg?v=0541951663" />
-    <link rel="icon" type="image/png" sizes="48x48" href="favicon-48x48.png?v=fa5ef3ef45" />
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png?v=930e621abf" />
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png?v=59d27f8786" />
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=e056084300" />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      sizes="any"
+      href="favicon.svg?v=0541951663"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="48x48"
+      href="favicon-48x48.png?v=fa5ef3ef45"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="favicon-32x32.png?v=930e621abf"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="favicon-16x16.png?v=59d27f8786"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="apple-touch-icon.png?v=e056084300"
+    />
     <script>
       (function () {
         const storageKey = "naruki-theme";
@@ -57,7 +89,10 @@
         document.documentElement.setAttribute("data-theme", theme);
         const themeMeta = document.querySelector('meta[name="theme-color"]');
         if (themeMeta) {
-          themeMeta.setAttribute("content", theme === "dark" ? darkMeta : lightMeta);
+          themeMeta.setAttribute(
+            "content",
+            theme === "dark" ? darkMeta : lightMeta,
+          );
         }
       })();
     </script>
@@ -89,9 +124,7 @@
       <a class="back-link" href="index.html">← На главную</a>
       <section class="doc">
         <h1>Политика конфиденциальности</h1>
-        <p class="doc__lead">
-          Действует с 10 февраля 2026 года.
-        </p>
+        <p class="doc__lead">Действует с 10 февраля 2026 года.</p>
 
         <div class="doc__section">
           <h2>1. Общие положения</h2>
@@ -104,8 +137,8 @@
         <div class="doc__section">
           <h2>2. Какие данные мы не собираем</h2>
           <p>
-            Мы не запрашиваем ФИО, email, телефоны, паспортные данные,
-            платежную информацию и другие сведения, позволяющие идентифицировать
+            Мы не запрашиваем ФИО, email, телефоны, паспортные данные, платежную
+            информацию и другие сведения, позволяющие идентифицировать
             пользователя.
           </p>
         </div>
@@ -116,8 +149,8 @@
             Мы используем Яндекс.Метрику для аналитики посещаемости и улучшения
             качества сервиса. Метрика может устанавливать cookies и собирать
             технические данные: IP-адрес, тип устройства и браузера, источник
-            перехода, посещенные страницы, время на сайте и действия пользователя
-            (включая просмотр страницы и клики).
+            перехода, посещенные страницы, время на сайте и действия
+            пользователя (включая просмотр страницы и клики).
           </p>
           <p>
             Аналитика включается только после вашего согласия в баннере. Вы
@@ -134,7 +167,8 @@
           <h2>4. Контакты оператора</h2>
           <p>
             По вопросам конфиденциальности можно написать:
-            <a href="mailto:naruki.online@yandex.ru">naruki.online@yandex.ru</a>.
+            <a href="mailto:naruki.online@yandex.ru">naruki.online@yandex.ru</a
+            >.
           </p>
         </div>
       </section>
@@ -149,17 +183,27 @@
       <p class="footer__copyright">© 2026 naruki.online</p>
     </footer>
 
-    <div class="cookie-banner" id="cookie-banner" role="dialog" aria-live="polite" hidden>
+    <div
+      class="cookie-banner"
+      id="cookie-banner"
+      role="dialog"
+      aria-live="polite"
+      hidden
+    >
       <div class="cookie-banner__text">
         <strong>Мы используем Яндекс.Метрику</strong>
         <span>
-          Она помогает улучшать сайт. Можно согласиться или отказаться. Подробнее — в
-          политике конфиденциальности.
+          Она помогает улучшать сайт. Можно согласиться или отказаться.
+          Подробнее — в политике конфиденциальности.
         </span>
       </div>
       <div class="cookie-banner__actions">
-        <button class="ghost" type="button" data-consent-decline>Отказаться</button>
-        <button class="primary" type="button" data-consent-accept>Согласиться</button>
+        <button class="ghost" type="button" data-consent-decline>
+          Отказаться
+        </button>
+        <button class="primary" type="button" data-consent-accept>
+          Согласиться
+        </button>
       </div>
     </div>
 

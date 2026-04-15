@@ -9,14 +9,18 @@
     try {
       const value = localStorage.getItem(STORAGE_KEY);
       if (value === "dark" || value === "light") return value;
-    } catch (_) {}
+    } catch {
+      /* private mode */
+    }
     return null;
   }
 
   function saveTheme(theme) {
     try {
       localStorage.setItem(STORAGE_KEY, theme);
-    } catch (_) {}
+    } catch {
+      /* private mode */
+    }
   }
 
   function getCurrentTheme() {
@@ -31,7 +35,7 @@
     if (!themeMeta) return;
     themeMeta.setAttribute(
       "content",
-      theme === "dark" ? DARK_THEME_COLOR : LIGHT_THEME_COLOR
+      theme === "dark" ? DARK_THEME_COLOR : LIGHT_THEME_COLOR,
     );
   }
 

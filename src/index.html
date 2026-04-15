@@ -32,11 +32,35 @@
     <link rel="alternate" href="https://naruki.online/" hreflang="ru" />
     <link rel="alternate" href="https://naruki.online/" hreflang="x-default" />
     <meta name="theme-color" content="#f6f0e9" />
-    <link rel="icon" type="image/svg+xml" sizes="any" href="favicon.svg?v=0541951663" />
-    <link rel="icon" type="image/png" sizes="48x48" href="favicon-48x48.png?v=fa5ef3ef45" />
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png?v=930e621abf" />
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png?v=59d27f8786" />
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=e056084300" />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      sizes="any"
+      href="favicon.svg?v=0541951663"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="48x48"
+      href="favicon-48x48.png?v=fa5ef3ef45"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="favicon-32x32.png?v=930e621abf"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="favicon-16x16.png?v=59d27f8786"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="apple-touch-icon.png?v=e056084300"
+    />
     <script>
       (function () {
         const storageKey = "naruki-theme";
@@ -57,7 +81,10 @@
         document.documentElement.setAttribute("data-theme", theme);
         const themeMeta = document.querySelector('meta[name="theme-color"]');
         if (themeMeta) {
-          themeMeta.setAttribute("content", theme === "dark" ? darkMeta : lightMeta);
+          themeMeta.setAttribute(
+            "content",
+            theme === "dark" ? darkMeta : lightMeta,
+          );
         }
       })();
     </script>
@@ -102,6 +129,7 @@
             <div class="sk sk-h-16 sk-w-70"></div>
             <div class="sk sk-h-44 sk-w-100"></div>
             <div class="sk sk-h-16 sk-w-60"></div>
+            <div class="sk sk-h-44 sk-w-100"></div>
             <div class="sk sk-h-44 sk-w-100"></div>
             <div class="skeleton__row">
               <div class="sk sk-h-44 sk-w-45"></div>
@@ -165,7 +193,11 @@
     </div>
     <main class="page">
       <nav class="calc-switch" aria-label="Калькуляторы">
-        <a class="calc-switch__brand" href="index.html" aria-label="Naruki.online">
+        <a
+          class="calc-switch__brand"
+          href="index.html"
+          aria-label="Naruki.online"
+        >
           <span>Naruki.online</span>
         </a>
         <div class="calc-switch__tabs" role="tablist" id="calc-switch-menu">
@@ -189,12 +221,22 @@
             aria-label="Включить тёмную тему"
             title="Включить тёмную тему"
           >
-            <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" aria-hidden="true">
+            <svg
+              class="theme-toggle__icon theme-toggle__icon--moon"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
               <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
             </svg>
-            <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" aria-hidden="true">
+            <svg
+              class="theme-toggle__icon theme-toggle__icon--sun"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
               <circle cx="12" cy="12" r="4" />
-              <path d="M12 2v2.2M12 19.8V22M4.9 4.9l1.6 1.6M17.5 17.5l1.6 1.6M2 12h2.2M19.8 12H22M4.9 19.1l1.6-1.6M17.5 6.5l1.6-1.6" />
+              <path
+                d="M12 2v2.2M12 19.8V22M4.9 4.9l1.6 1.6M17.5 17.5l1.6 1.6M2 12h2.2M19.8 12H22M4.9 19.1l1.6-1.6M17.5 6.5l1.6-1.6"
+              />
             </svg>
             <span class="visually-hidden">Переключить тему</span>
           </button>
@@ -211,81 +253,115 @@
           </button>
         </div>
       </nav>
-      <section class="hero">
-        <div class="hero__panel">
-          <form id="calc-form" class="card">
-            <div class="field">
-              <label for="gross">Зарплата в месяц до налогов, ₽</label>
-              <input
-                id="gross"
-                name="gross"
-                type="text"
-                inputmode="numeric"
-                min="0"
-                step="1000"
-                placeholder="Например, 50 000"
-                required
-              />
-            </div>
-            <div class="field">
-              <label for="start">Месяц начала работы в этом году</label>
-              <select id="start" name="start" required>
-                <option value="1">Январь</option>
-                <option value="2">Февраль</option>
-                <option value="3">Март</option>
-                <option value="4">Апрель</option>
-                <option value="5">Май</option>
-                <option value="6">Июнь</option>
-                <option value="7">Июль</option>
-                <option value="8">Август</option>
-                <option value="9">Сентябрь</option>
-                <option value="10">Октябрь</option>
-                <option value="11">Ноябрь</option>
-                <option value="12">Декабрь</option>
-              </select>
-            </div>
-            <div class="actions">
-              <button class="primary" type="submit">Рассчитать</button>
-              <div class="share-wrap">
-                <button
-                  class="ghost ghost--icon"
-                  type="button"
-                  id="share-link"
-                  aria-label="Поделиться ссылкой"
-                  title="Поделиться ссылкой"
+      <section class="hero hero--main">
+        <div class="hero__text">
+          <p class="eyebrow">Зарплата 2026 · Налоги в расчетах</p>
+          <h1>Калькулятор зарплаты на руки</h1>
+          <p class="lead">
+            Введите зарплату и месяц начала работы, чтобы сразу увидеть итоговый
+            доход на руки с учетом прогрессивной шкалы НДФЛ.
+          </p>
+          <p class="meta-note">
+            Все расчеты ориентировочные и актуальны на 2026 год.
+          </p>
+        </div>
+        <div class="hero__row">
+          <div class="hero__panel">
+            <form id="calc-form" class="card">
+              <div class="field">
+                <label for="gross">Зарплата в месяц до налогов, ₽</label>
+                <input
+                  id="gross"
+                  name="gross"
+                  type="text"
+                  inputmode="numeric"
+                  min="0"
+                  step="1000"
+                  placeholder="Например, 50 000"
+                  required
+                />
+              </div>
+              <div class="field">
+                <label for="start">Месяц начала работы в этом году</label>
+                <select id="start" name="start" required>
+                  <option value="1">Январь</option>
+                  <option value="2">Февраль</option>
+                  <option value="3">Март</option>
+                  <option value="4">Апрель</option>
+                  <option value="5">Май</option>
+                  <option value="6">Июнь</option>
+                  <option value="7">Июль</option>
+                  <option value="8">Август</option>
+                  <option value="9">Сентябрь</option>
+                  <option value="10">Октябрь</option>
+                  <option value="11">Ноябрь</option>
+                  <option value="12">Декабрь</option>
+                </select>
+              </div>
+              <div class="actions">
+                <button class="primary" type="submit">Рассчитать</button>
+                <div class="share-wrap">
+                  <button
+                    class="ghost ghost--icon"
+                    type="button"
+                    id="share-link"
+                    aria-label="Поделиться ссылкой"
+                    title="Поделиться ссылкой"
+                  >
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <circle cx="18" cy="5" r="3" />
+                      <circle cx="6" cy="12" r="3" />
+                      <circle cx="18" cy="19" r="3" />
+                      <path d="M8.7 11l6.6-4.1M8.7 13l6.6 4.1" />
+                    </svg>
+                  </button>
+                  <span
+                    class="share-tooltip"
+                    id="share-status"
+                    role="status"
+                    aria-live="polite"
+                  ></span>
+                </div>
+              </div>
+              <p class="calc-hint" id="calc-hint">
+                Данные изменились — пересчитайте.
+              </p>
+              <p class="hint">
+                Ставки применяются к годовому доходу по прогрессивной шкале.
+              </p>
+            </form>
+          </div>
+          <div class="card bonus-card" id="bonus-card">
+            <p class="bonus-card__title">Премии</p>
+            <div class="bonus-card__body">
+              <div class="field">
+                <label for="monthly-bonus"
+                  >Ежемесячный бонус до налогов, ₽</label
                 >
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <circle cx="18" cy="5" r="3" />
-                    <circle cx="6" cy="12" r="3" />
-                    <circle cx="18" cy="19" r="3" />
-                    <path d="M8.7 11l6.6-4.1M8.7 13l6.6 4.1" />
-                  </svg>
+                <input
+                  id="monthly-bonus"
+                  name="monthly-bonus"
+                  type="text"
+                  inputmode="numeric"
+                  min="0"
+                  placeholder="0"
+                />
+              </div>
+              <div class="bonus-payments" id="bonus-payments">
+                <p class="field-label">Разовые выплаты</p>
+                <div
+                  class="bonus-payments__list"
+                  id="bonus-payments-list"
+                ></div>
+                <button
+                  class="ghost bonus-payments__add"
+                  type="button"
+                  id="bonus-add"
+                >
+                  + Добавить выплату
                 </button>
-                <span
-                  class="share-tooltip"
-                  id="share-status"
-                  role="status"
-                  aria-live="polite"
-                ></span>
               </div>
             </div>
-            <p class="calc-hint" id="calc-hint">Данные изменились — пересчитайте.</p>
-            <p class="hint">Ставки применяются к годовому доходу по прогрессивной шкале.</p>
-          </form>
-        </div>
-        <div class="hero__content">
-          <div class="hero__text">
-            <p class="eyebrow">Зарплата 2026 · Налоги в расчетах</p>
-            <h1>Калькулятор зарплаты на руки</h1>
-            <p class="lead">
-              Введите зарплату и месяц начала работы, чтобы сразу увидеть итоговый доход
-              на руки с учетом прогрессивной шкалы НДФЛ.
-            </p>
-            <p class="lead">
-              Подходит, если нужно посчитать зарплату на руки или сравнить зп на руки
-              при разных окладах.
-            </p>
-            <p class="meta-note">Все расчеты ориентировочные и актуальны на 2026 год.</p>
           </div>
           <section class="summary summary--hero" aria-live="polite">
             <div class="card stat">
@@ -309,7 +385,6 @@
 
       <div class="calc-progress" aria-hidden="true"></div>
       <section class="details">
-
         <div class="chart">
           <div class="chart__header">
             <h2>Доход по месяцам</h2>
@@ -332,8 +407,9 @@
             <details class="faq__item">
               <summary>Как посчитать зарплату на руки (зп на руки)?</summary>
               <p>
-                Калькулятор применяет прогрессивную шкалу НДФЛ к годовому доходу,
-                а затем показывает итоговую сумму и помесячные значения на руки.
+                Калькулятор применяет прогрессивную шкалу НДФЛ к годовому
+                доходу, а затем показывает итоговую сумму и помесячные значения
+                на руки.
               </p>
             </details>
             <details class="faq__item">
@@ -371,36 +447,46 @@
       <p class="footer__copyright">© 2026 naruki.online</p>
     </footer>
 
-    <div class="cookie-banner" id="cookie-banner" role="dialog" aria-live="polite" hidden>
+    <div
+      class="cookie-banner"
+      id="cookie-banner"
+      role="dialog"
+      aria-live="polite"
+      hidden
+    >
       <div class="cookie-banner__text">
         <strong>Мы используем Яндекс.Метрику</strong>
         <span>
-          Она помогает улучшать сайт. Можно согласиться или отказаться. Подробнее — в
-          политике конфиденциальности.
+          Она помогает улучшать сайт. Можно согласиться или отказаться.
+          Подробнее — в политике конфиденциальности.
         </span>
       </div>
       <div class="cookie-banner__actions">
-        <button class="ghost" type="button" data-consent-decline>Отказаться</button>
-        <button class="primary" type="button" data-consent-accept>Согласиться</button>
+        <button class="ghost" type="button" data-consent-decline>
+          Отказаться
+        </button>
+        <button class="primary" type="button" data-consent-accept>
+          Согласиться
+        </button>
       </div>
     </div>
 
     <script src="theme.js?v=d2f29bd9bb"></script>
-    <script src="app.js?v=d20adbac89"></script>
+    <script type="module" src="app.js?v=d20adbac89"></script>
     <script src="analytics.js?v=e906191f01"></script>
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "FAQPage",
         "mainEntity": [
-            {
-              "@type": "Question",
-              "name": "Как посчитать зарплату на руки (зп на руки)?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Калькулятор применяет прогрессивную шкалу НДФЛ к годовому доходу, а затем показывает итоговую сумму и помесячные значения на руки."
-              }
-            },
+          {
+            "@type": "Question",
+            "name": "Как посчитать зарплату на руки (зп на руки)?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Калькулятор применяет прогрессивную шкалу НДФЛ к годовому доходу, а затем показывает итоговую сумму и помесячные значения на руки."
+            }
+          },
           {
             "@type": "Question",
             "name": "Почему важно указать месяц начала работы?",

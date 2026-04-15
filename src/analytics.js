@@ -4,7 +4,7 @@ const CONSENT_KEY = "naruki_ym_consent";
 function getStoredConsent() {
   try {
     return localStorage.getItem(CONSENT_KEY);
-  } catch (error) {
+  } catch {
     return null;
   }
 }
@@ -12,7 +12,7 @@ function getStoredConsent() {
 function setStoredConsent(value) {
   try {
     localStorage.setItem(CONSENT_KEY, value);
-  } catch (error) {
+  } catch {
     // Ignore storage errors (private mode / blocked storage).
   }
 }
@@ -33,7 +33,13 @@ function loadMetrika() {
     k.async = 1;
     k.src = r;
     a.parentNode.insertBefore(k, a);
-  })(window, document, "script", `https://mc.yandex.ru/metrika/tag.js?id=${YM_COUNTER_ID}`, "ym");
+  })(
+    window,
+    document,
+    "script",
+    `https://mc.yandex.ru/metrika/tag.js?id=${YM_COUNTER_ID}`,
+    "ym",
+  );
 
   window.ym(YM_COUNTER_ID, "init", {
     ssr: true,
@@ -51,7 +57,7 @@ function trackGoal(name, params) {
   if (typeof window.ym !== "function") return;
   try {
     window.ym(YM_COUNTER_ID, "reachGoal", name, params);
-  } catch (error) {
+  } catch {
     // Ignore tracking errors.
   }
 }
@@ -108,7 +114,9 @@ if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", setupConsentBanner, {
     once: true,
   });
-  document.addEventListener("DOMContentLoaded", setupGoalTracking, { once: true });
+  document.addEventListener("DOMContentLoaded", setupGoalTracking, {
+    once: true,
+  });
 } else {
   setupConsentBanner();
   setupGoalTracking();
