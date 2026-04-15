@@ -1812,17 +1812,24 @@ body.is-calculating .calc-progress::after {
 
   .hero__panel {
     justify-content: center;
-    order: 2;
+    order: 1;
   }
 
-  .hero__row {
+  .hero__row,
+  .hero--main .hero__row,
+  .hero--raise .hero__row {
     grid-template-columns: 1fr;
   }
 
   .bonus-card {
-    order: 3;
+    order: 2;
     width: 100%;
     max-width: 100%;
+  }
+
+  .summary--hero,
+  .summary--raise {
+    order: 3;
   }
 
   .hero__content {
@@ -1830,11 +1837,11 @@ body.is-calculating .calc-progress::after {
   }
 
   .hero__text {
-    order: 1;
+    order: -1;
   }
 
-  .summary--hero {
-    order: 3;
+  .hero__row {
+    order: 1;
   }
 
   .summary {
@@ -1983,6 +1990,7 @@ body.is-calculating .calc-progress::after {
     top: calc(100% + 8px);
     right: 0;
     left: auto;
+    z-index: 10;
     min-width: 220px;
     flex-direction: column;
     align-items: stretch;
