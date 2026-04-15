@@ -1,3 +1,16 @@
+// ── Re-export pure tax logic ──────────────────────────────
+
+export {
+  brackets,
+  clampNumber,
+  calculateTaxForIncome,
+  getBonusForMonth,
+  calculateMonthlyNetSequence,
+  getAfterBonuses,
+} from "./tax.js";
+
+import { clampNumber } from "./tax.js";
+
 // ── Constants ──────────────────────────────────────────────
 
 export const monthNames = [
@@ -13,14 +26,6 @@ export const monthNames = [
   "Октябрь",
   "Ноябрь",
   "Декабрь",
-];
-
-export const brackets = [
-  { label: "До 2 400 000", limit: 2_400_000, rate: 0.13 },
-  { label: "2 400 000 – 5 000 000", limit: 5_000_000, rate: 0.15 },
-  { label: "5 000 000 – 20 000 000", limit: 20_000_000, rate: 0.18 },
-  { label: "20 000 000 – 50 000 000", limit: 50_000_000, rate: 0.2 },
-  { label: "Свыше 50 000 000", limit: Infinity, rate: 0.22 },
 ];
 
 export const formatter = new Intl.NumberFormat("ru-RU", {
@@ -118,11 +123,6 @@ export function setupCalcSwitchMenu() {
 
 // ── Number Utilities ───────────────────────────────────────
 
-export function clampNumber(value) {
-  if (!Number.isFinite(value) || value < 0) return 0;
-  return value;
-}
-
 export function normalizeGrossInput(value) {
   return value.replace(/[^\d]/g, "");
 }
@@ -200,7 +200,7 @@ export function scrollToResults(summarySection) {
     document.activeElement.blur();
   }
   const prefersReduced = window.matchMedia(
-    "(prefers-reduced-motion: reduce)"
+    "(prefers-reduced-motion: reduce)",
   ).matches;
   const behavior = prefersReduced ? "auto" : "smooth";
   summarySection.scrollIntoView({ behavior, block: "start" });
@@ -209,68 +209,6 @@ export function scrollToResults(summarySection) {
   window.setTimeout(() => {
     window.scrollTo({ top, behavior });
   }, 40);
-}
-
-// ── Tax Calculation ────────────────────────────────────────
-
-export function calculateTaxForIncome(income) {
-  let remaining = income;
-  let previousLimit = 0;
-  let totalTax = 0;
-  const breakdown = brackets.map((bracket) => {
-    const taxable = Math.max(
-      0,
-      Math.min(remaining, bracket.limit - previousLimit)
-    );
-    const tax = taxable * bracket.rate;
-    remaining -= taxable;
-    previousLimit = bracket.limit;
-    totalTax += tax;
-    return {
-      label: bracket.label,
-      rate: bracket.rate,
-      taxable,
-      tax,
-    };
-  });
-
-  return { totalTax, breakdown };
-}
-
-export function getBonusForMonth(month, monthlyBonus, oneTimePayments) {
-  const oneTime = oneTimePayments
-    .filter((p) => p.month === month)
-    .reduce((s, p) => s + p.amount, 0);
-  return monthlyBonus + oneTime;
-}
-
-export function calculateMonthlyNetSequence(
-  grosses,
-  monthlyBonus = 0,
-  oneTimePayments = []
-) {
-  const months = [];
-  let cumulativeIncome = 0;
-  let cumulativeTax = 0;
-
-  for (let month = 1; month <= 12; month += 1) {
-    const gross = clampNumber(grosses[month - 1] ?? 0);
-    const bonus = getBonusForMonth(month, monthlyBonus, oneTimePayments);
-    const totalEarned = gross + bonus;
-    cumulativeIncome += totalEarned;
-    const { totalTax } = calculateTaxForIncome(cumulativeIncome);
-    const monthTax = totalTax - cumulativeTax;
-    cumulativeTax = totalTax;
-    months.push({
-      month,
-      gross,
-      bonus,
-      tax: monthTax,
-      net: totalEarned - monthTax,
-    });
-  }
-
-  return months;
 }
 
 // ── DOM: Bonus Payment Rows ────────────────────────────────
@@ -289,16 +227,15 @@ export function createPaymentRow(month = 1, amount = 0) {
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
     </button>
   `;
-  row.querySelector(".bonus-payment-row__remove").addEventListener(
-    "click",
-    () => {
+  row
+    .querySelector(".bonus-payment-row__remove")
+    .addEventListener("click", () => {
       row.remove();
       setDirtyState(true);
-    }
-  );
-  row.querySelector(".bonus-payment-row__amount").addEventListener(
-    "input",
-    (e) => {
+    });
+  row
+    .querySelector(".bonus-payment-row__amount")
+    .addEventListener("input", (e) => {
       const raw = e.target.value;
       const caret = e.target.selectionStart;
       const digitsBefore = countDigitsBefore(raw, caret);
@@ -307,8 +244,7 @@ export function createPaymentRow(month = 1, amount = 0) {
       const nextCaret = caretFromDigits(formatted, digitsBefore);
       e.target.setSelectionRange(nextCaret, nextCaret);
       setDirtyState(true);
-    }
-  );
+    });
   row
     .querySelector(".bonus-payment-row__month")
     .addEventListener("change", () => setDirtyState(true));
@@ -321,9 +257,7 @@ export function getOneTimePayments(listEl) {
     .map((row) => ({
       month: Number(row.querySelector(".bonus-payment-row__month").value),
       amount: clampNumber(
-        parseGrossInput(
-          row.querySelector(".bonus-payment-row__amount").value
-        )
+        parseGrossInput(row.querySelector(".bonus-payment-row__amount").value),
       ),
     }))
     .filter((p) => p.amount > 0);
@@ -369,7 +303,7 @@ export function createShareHandler(shareStatusEl) {
     try {
       await navigator.clipboard.writeText(url);
       setShareStatus("Ссылка скопирована.");
-    } catch (error) {
+    } catch {
       const fallback = document.createElement("input");
       fallback.value = url;
       document.body.appendChild(fallback);
@@ -377,7 +311,7 @@ export function createShareHandler(shareStatusEl) {
       const copied = document.execCommand("copy");
       document.body.removeChild(fallback);
       setShareStatus(
-        copied ? "Ссылка скопирована." : "Не удалось скопировать ссылку."
+        copied ? "Ссылка скопирована." : "Не удалось скопировать ссылку.",
       );
     }
   };

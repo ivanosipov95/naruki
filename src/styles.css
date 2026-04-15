@@ -175,7 +175,9 @@ body {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.35s ease, visibility 0.35s ease;
+  transition:
+    opacity 0.35s ease,
+    visibility 0.35s ease;
 }
 
 body.is-loading .skeleton {
@@ -454,7 +456,10 @@ body.is-transitioning .footer {
   font-weight: 500;
   padding: 8px 16px;
   border-radius: var(--radius-sm);
-  transition: color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .calc-switch__tab:hover {
@@ -676,7 +681,9 @@ html[data-theme="dark"] .theme-toggle__icon--sun {
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
 }
 
 .share-tooltip::after {
@@ -704,7 +711,9 @@ html[data-theme="dark"] .theme-toggle__icon--sun {
   border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: 0.9rem;
-  transition: background 0.2s ease, border-color 0.2s ease;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .ghost:hover {
@@ -1085,7 +1094,10 @@ body.is-calculating .calc-progress::after {
   font-weight: 500;
   cursor: pointer;
   color: var(--muted);
-  transition: color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .segmented__item input {
@@ -1196,7 +1208,10 @@ body.is-calculating .calc-progress::after {
 .month-table__head,
 .month-table__row {
   display: grid;
-  grid-template-columns: minmax(120px, 1fr) minmax(120px, auto) minmax(120px, auto);
+  grid-template-columns: minmax(120px, 1fr) minmax(120px, auto) minmax(
+      120px,
+      auto
+    );
   gap: 10px;
   align-items: center;
   padding: 12px 14px;
@@ -1406,7 +1421,10 @@ body.is-calculating .calc-progress::after {
 
 .month-table--bonus .month-table__head,
 .month-table--bonus .month-table__row {
-  grid-template-columns: minmax(100px, 1fr) minmax(110px, auto) minmax(100px, auto) minmax(100px, auto);
+  grid-template-columns: minmax(100px, 1fr) minmax(110px, auto) minmax(
+      100px,
+      auto
+    ) minmax(100px, auto);
 }
 
 .month-table__bonus {
@@ -1754,7 +1772,6 @@ body.is-calculating .calc-progress::after {
   color: var(--ink);
 }
 
-
 .footer {
   text-align: center;
   padding: 0 24px 40px;
@@ -1977,7 +1994,9 @@ body.is-calculating .calc-progress::after {
     opacity: 0;
     transform: translateY(-6px);
     pointer-events: none;
-    transition: opacity 0.2s ease, transform 0.2s ease;
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease;
   }
 
   .calc-switch__tab {

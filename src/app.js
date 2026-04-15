@@ -16,7 +16,6 @@ import {
   scrollToResults,
   calculateTaxForIncome,
   getBonusForMonth,
-  calculateMonthlyNetSequence,
   createPaymentRow,
   getOneTimePayments,
   bindFormattedInput,
@@ -95,7 +94,12 @@ function calculateMonthlyNet(gross, startMonth, monthlyBonus, oneTimePayments) {
 }
 
 function calculateAll(gross, startMonth, monthlyBonus, oneTimePayments) {
-  const months = calculateMonthlyNet(gross, startMonth, monthlyBonus, oneTimePayments);
+  const months = calculateMonthlyNet(
+    gross,
+    startMonth,
+    monthlyBonus,
+    oneTimePayments,
+  );
   const totalGross = months.reduce((s, m) => s + m.gross + m.bonus, 0);
   const totalTax = months.reduce((s, m) => s + m.tax, 0);
   const totalNet = totalGross - totalTax;
@@ -198,7 +202,9 @@ function renderChart(months) {
 function getCurrentInputs() {
   const gross = clampNumber(parseGrossInput(grossInput.value));
   const startMonth = Number(startInput.value);
-  const monthlyBonus = clampNumber(parseGrossInput(monthlyBonusInput?.value ?? ""));
+  const monthlyBonus = clampNumber(
+    parseGrossInput(monthlyBonusInput?.value ?? ""),
+  );
   const oneTimePayments = getOneTimePayments(bonusPaymentsList);
   return { gross, startMonth, monthlyBonus, oneTimePayments };
 }
@@ -225,7 +231,9 @@ function syncUrlParams({ gross, startMonth, monthlyBonus, oneTimePayments }) {
   if (oneTimePayments && oneTimePayments.length > 0) {
     params.set(
       "p",
-      oneTimePayments.map((p) => `${p.month}:${Math.round(p.amount)}`).join(",")
+      oneTimePayments
+        .map((p) => `${p.month}:${Math.round(p.amount)}`)
+        .join(","),
     );
   } else {
     params.delete("p");
@@ -241,7 +249,8 @@ function readUrlParams() {
   const oneTimePayments = parsePaymentsParam(params.get("p") || "");
 
   const hasGross = Number.isFinite(gross) && gross > 0;
-  const hasStart = Number.isFinite(startMonth) && startMonth >= 1 && startMonth <= 12;
+  const hasStart =
+    Number.isFinite(startMonth) && startMonth >= 1 && startMonth <= 12;
 
   return {
     gross: hasGross ? gross : null,
@@ -258,7 +267,8 @@ function handleSubmit(event) {
   if (calcState.active) return;
   const shouldScroll = event?.isTrusted;
   calcState.set(true);
-  const { gross, startMonth, monthlyBonus, oneTimePayments } = getCurrentInputs();
+  const { gross, startMonth, monthlyBonus, oneTimePayments } =
+    getCurrentInputs();
   if (shouldScroll && gross <= 0) {
     grossInput.setCustomValidity("Введите значение больше 0.");
     grossInput.reportValidity();
@@ -266,7 +276,12 @@ function handleSubmit(event) {
     return;
   }
   grossInput.setCustomValidity("");
-  const results = calculateAll(gross, startMonth, monthlyBonus, oneTimePayments);
+  const results = calculateAll(
+    gross,
+    startMonth,
+    monthlyBonus,
+    oneTimePayments,
+  );
 
   renderSummary(results);
   renderBrackets(results.breakdown);
@@ -308,8 +323,14 @@ const copyShareLink = createShareHandler(shareStatusEl);
 if (shareButton) {
   shareButton.addEventListener("click", () => {
     trackGoal("share_click", { calculator: "salary" });
-    const { gross, startMonth, monthlyBonus, oneTimePayments } = getCurrentInputs();
-    const results = calculateAll(gross, startMonth, monthlyBonus, oneTimePayments);
+    const { gross, startMonth, monthlyBonus, oneTimePayments } =
+      getCurrentInputs();
+    const results = calculateAll(
+      gross,
+      startMonth,
+      monthlyBonus,
+      oneTimePayments,
+    );
     renderSummary(results);
     renderBrackets(results.breakdown);
     renderChart(results.months);

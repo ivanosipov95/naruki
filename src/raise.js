@@ -13,13 +13,13 @@ import {
   setDirtyState,
   createCalculatingState,
   scrollToResults,
-  calculateTaxForIncome,
   calculateMonthlyNetSequence,
   createPaymentRow,
   getOneTimePayments,
   bindFormattedInput,
   createShareHandler,
   updateUrl,
+  getAfterBonuses,
 } from "./shared.js";
 
 // ── DOM refs ───────────────────────────────────────────────
@@ -38,7 +38,9 @@ const bonusAddBtn = document.querySelector("#bonus-add");
 const bonusAfterModeSelect = document.querySelector("#bonus-after-mode");
 const bonusAfterPanel = document.querySelector("#bonus-after-panel");
 const monthlyBonusAfterInput = document.querySelector("#monthly-bonus-after");
-const bonusPaymentsAfterList = document.querySelector("#bonus-payments-after-list");
+const bonusPaymentsAfterList = document.querySelector(
+  "#bonus-payments-after-list",
+);
 const bonusAfterAddBtn = document.querySelector("#bonus-after-add");
 
 const summaryCurrentGrossEl = document.querySelector("#summary-current-gross");
@@ -85,36 +87,11 @@ function formatPercentInput(value) {
   return String(rounded);
 }
 
-function getAfterBonuses({
-  monthlyBonus,
-  oneTimePayments,
-  bonusAfterMode,
-  newMonthlyBonus,
-  newOneTimePayments,
-  currentGross,
-  newGross,
-}) {
-  if (bonusAfterMode === "proportional") {
-    const ratio = currentGross > 0 ? newGross / currentGross : 1;
-    return {
-      monthlyBonus: monthlyBonus * ratio,
-      oneTimePayments: oneTimePayments.map((p) => ({
-        month: p.month,
-        amount: p.amount * ratio,
-      })),
-    };
-  }
-  if (bonusAfterMode === "custom") {
-    return { monthlyBonus: newMonthlyBonus, oneTimePayments: newOneTimePayments };
-  }
-  return { monthlyBonus, oneTimePayments };
-}
-
 function calculateMonthlyNet(gross, monthlyBonus = 0, oneTimePayments = []) {
   return calculateMonthlyNetSequence(
     Array(12).fill(gross),
     monthlyBonus,
-    oneTimePayments
+    oneTimePayments,
   );
 }
 
@@ -152,26 +129,25 @@ function getCurrentInputs() {
   const currentGross = clampNumber(parseGrossInput(currentGrossInput.value));
   const mode = getSelectedMode();
   const startMonth = Number(raiseStartInput.value) || 1;
-  let raisePercent = 0;
-  let raiseAmount = 0;
+  let raisePercent;
+  let raiseAmount;
 
   if (mode === "percent") {
     raisePercent = clampNumber(parsePercentInput(raisePercentInput.value));
     raiseAmount = (currentGross * raisePercent) / 100;
   } else {
     raiseAmount = clampNumber(parseGrossInput(raiseAmountInput.value));
-    raisePercent =
-      currentGross === 0 ? 0 : (raiseAmount / currentGross) * 100;
+    raisePercent = currentGross === 0 ? 0 : (raiseAmount / currentGross) * 100;
   }
 
   const newGross = clampNumber(currentGross + raiseAmount);
   const monthlyBonus = clampNumber(
-    parseGrossInput(monthlyBonusInput?.value ?? "")
+    parseGrossInput(monthlyBonusInput?.value ?? ""),
   );
   const oneTimePayments = getOneTimePayments(bonusPaymentsList);
   const bonusAfterMode = bonusAfterModeSelect?.value ?? "same";
   const newMonthlyBonus = clampNumber(
-    parseGrossInput(monthlyBonusAfterInput?.value ?? "")
+    parseGrossInput(monthlyBonusAfterInput?.value ?? ""),
   );
   const newOneTimePayments = getOneTimePayments(bonusPaymentsAfterList);
 
@@ -220,22 +196,22 @@ function renderSummary({
 }) {
   summaryCurrentGrossEl.textContent = formatter.format(currentGross);
   summaryCurrentNetEl.textContent = `На руки в среднем: ${formatter.format(
-    totals.current.avgNet
+    totals.current.avgNet,
   )}`;
 
   summaryRaiseAmountEl.textContent = formatter.format(raiseAmount);
   summaryRaisePercentEl.textContent = `Это ${percentFormatter.format(
-    raisePercent / 100
+    raisePercent / 100,
   )}`;
 
   summaryNewGrossEl.textContent = formatter.format(newGross);
   summaryNewNetEl.textContent = `На руки в среднем: ${formatter.format(
-    totals.new.avgNet
+    totals.new.avgNet,
   )}`;
 
   summaryNetDeltaEl.textContent = formatter.format(totals.delta.netYear);
   summaryNetMonthEl.textContent = `В среднем в месяц: ${formatter.format(
-    totals.delta.netMonth
+    totals.delta.netMonth,
   )}`;
 }
 
@@ -308,7 +284,7 @@ function renderChart(currentMonths, newMonths) {
       <span class="month-table__month">${label}</span>
       <span class="month-table__value text-right">${formatter.format(item.net)}</span>
       <span class="month-table__value month-table__net text-right">${formatter.format(
-        nextItem.net
+        nextItem.net,
       )}</span>
       <span class="month-table__value text-right">${formatter.format(delta)}</span>
     `;
@@ -355,20 +331,20 @@ function renderAll(inputs) {
   const currentMonths = calculateMonthlyNet(
     inputs.currentGross,
     inputs.monthlyBonus,
-    inputs.oneTimePayments
+    inputs.oneTimePayments,
   );
   const grosses = Array.from({ length: 12 }, (_, index) =>
-    index + 1 < inputs.startMonth ? inputs.currentGross : inputs.newGross
+    index + 1 < inputs.startMonth ? inputs.currentGross : inputs.newGross,
   );
   const newMonths = calculateMonthlyNetSequence(
     grosses,
     afterBonuses.monthlyBonus,
-    afterBonuses.oneTimePayments
+    afterBonuses.oneTimePayments,
   );
   const totals = calculateTotalsFromMonths(currentMonths, newMonths);
 
   raiseAmountInput.value = formatGrossInput(
-    String(Math.round(inputs.raiseAmount))
+    String(Math.round(inputs.raiseAmount)),
   );
   raisePercentInput.value = formatPercentInput(inputs.raisePercent);
 
@@ -406,7 +382,7 @@ function syncUrlParams(inputs) {
       "p",
       inputs.oneTimePayments
         .map((p) => `${p.month}:${Math.round(p.amount)}`)
-        .join(",")
+        .join(","),
     );
   } else {
     params.delete("p");
@@ -417,7 +393,7 @@ function syncUrlParams(inputs) {
   if (hasBonus && inputs.bonusAfterMode && inputs.bonusAfterMode !== "same") {
     params.set(
       "bam",
-      inputs.bonusAfterMode === "proportional" ? "prop" : "custom"
+      inputs.bonusAfterMode === "proportional" ? "prop" : "custom",
     );
   } else {
     params.delete("bam");
@@ -433,7 +409,7 @@ function syncUrlParams(inputs) {
         "np",
         inputs.newOneTimePayments
           .map((p) => `${p.month}:${Math.round(p.amount)}`)
-          .join(",")
+          .join(","),
       );
     } else {
       params.delete("np");
@@ -620,7 +596,7 @@ if (presetValue) {
     raiseAmountInput.value = formatGrossInput(String(presetValue));
   } else {
     raisePercentInput.value = formatPercentInput(
-      parsePercentInput(presetValue)
+      parsePercentInput(presetValue),
     );
   }
 }
